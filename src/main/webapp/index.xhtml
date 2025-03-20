@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Bens Tech</title>
+    </h:head>
+    <h:body>
+
+        <p:megaMenu orientation="horizontal" autoDisplay="false" style="margin-bottom: 18px">
+            <f:facet name="start">
+                <p:graphicImage value="assets/logoBranca.png" width="210" height="54"/>
+            </f:facet>
+            <p:submenu label="Inventário" icon="pi pi-fw pi-list" style="margin-top: 9px">
+                <p:column>
+                    <p:submenu label="Bem">
+                        <p:menuitem value="Cadastrar"/>
+                        <p:menuitem value="Pesquisar"/>
+                    </p:submenu>
+                    <p:submenu label="Tipo produto">
+                        <p:menuitem value="Cadastrar"/>
+                        <p:menuitem value="Pesquisar"/>
+                    </p:submenu>
+                </p:column>
+            </p:submenu>
+
+            <p:submenu label="Configurações" icon="pi pi-fw pi-cog">
+
+                <p:column>
+                    <p:submenu label="User 1">
+                        <p:menuitem value="User 1.1"/>
+                        <p:menuitem value="User 1.2"/>
+                    </p:submenu>
+                    <p:submenu label="User 2">
+                        <p:menuitem value="User 2.1"/>
+                        <p:menuitem value="User 2.2"/>
+                    </p:submenu>
+                </p:column>
+
+            </p:submenu>
+
+        </p:megaMenu>
+
+        <p:commandButton value="Novo ativo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlg3').show()"/>
+        <p:dataTable style="margin-top: 12px" >
+
+        </p:dataTable>
+
+
+
+
+        <p:dialog header="Adicionar bem" widgetVar="dlg3" minHeight="40" width="350" showEffect="fade" focus="btnYes" closeOnEscape="true">
+
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px">
+
+                <p:outputLabel value="Nome do bem: "/>
+                <p:inputText value="#{managerBem.bem.nomeProduto}"/>
+                <p:outputLabel for="basic" value="Data de compra: " />
+                <p:datePicker id="basic" value="#{managerBem.bem.dataCompra}" pattern="dd/MM/yyyy"/>
+
+            </div>
+
+            <f:facet name="footer">
+                <p:commandButton type="button" value="Cancelar" styleClass="ui-button-flat mr-2" style="width: 6rem" />
+                <p:commandButton id="btnYes" type="button" value="Salvar" style="width: 5rem" />
+            </f:facet>
+        </p:dialog>
+    </h:body>
+</html>
