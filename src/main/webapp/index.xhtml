@@ -44,28 +44,111 @@
         </p:megaMenu>
 
         <p:commandButton value="Novo ativo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlg3').show()"/>
-        <p:dataTable style="margin-top: 12px" >
+        <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlg4').show()" style="margin-left: 24px"/>
 
+        <p:dataTable id="bensDataTable" var="bemDt" value="#{managerBem.bens}"  style="margin-top: 24px">
+            <p:column headerText="Nome do produto">
+                <h:outputText value="#{bemDt.nomeProduto}" />
+            </p:column>
+            <p:column headerText="Tipo">
+                <h:outputText value="#{bemDt.tipoProduto}" />
+            </p:column>
+            <p:column headerText="Preço da compra">
+                <h:outputText value="#{bemDt.precoCompra}" />
+            </p:column>
+            <p:column headerText="Valor residual">
+                <h:outputText value="#{bemDt.valorResidual}" />
+            </p:column>
+            <p:column headerText="Vida Útil">
+                <h:outputText value="#{bemDt.vidaUtil}" />
+            </p:column>
+            <p:column headerText="Depreciação Anual">
+                <h:outputText value="#{bemDt.calcularDepreciacaoAnual()}" />
+            </p:column>
+            <p:column headerText="Depreciação Acumulada">
+                <h:outputText value="#{bemDt.calcularDepreciacaoAnual()}" />
+            </p:column>
         </p:dataTable>
 
-
-
+        <p:dataTable id="tiposDataTable" var="tipoDt" value="#{managerTipoProduto.tipos}"  style="margin-top: 24px">
+            <p:column headerText="Tipo">
+                <h:outputText value="#{tipoDt.tipo}" />
+            </p:column>
+        </p:dataTable>
 
         <p:dialog header="Adicionar bem" widgetVar="dlg3" minHeight="40" width="350" showEffect="fade" focus="btnYes" closeOnEscape="true">
+            <h:form id="dlgBem" >
 
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
 
-                <p:outputLabel value="Nome do bem: "/>
-                <p:inputText value="#{managerBem.bem.nomeProduto}"/>
-                <p:outputLabel for="basic" value="Data de compra: " />
-                <p:datePicker id="basic" value="#{managerBem.bem.dataCompra}" pattern="dd/MM/yyyy"/>
+                    <p:outputLabel value="Nome do bem"/>
+                    <p:inputText value="#{managerBem.bem.nomeProduto}"/>
 
-            </div>
+                    <p:outputLabel for="@next" value="Tipo do bem"/>
+                    <p:selectOneMenu id="option" value="#{managerBem.idTipoSelecionado}">
+                        <f:selectItem itemLabel="Selecione um tipo" itemValue="" noSelectionOption="true" />
+                        <f:selectItems value="#{managerTipoProduto.tipos}" var="tipo" itemLabel="#{tipo.tipo}" itemValue="#{tipo.id}"/>
+                    </p:selectOneMenu>
 
-            <f:facet name="footer">
-                <p:commandButton type="button" value="Cancelar" styleClass="ui-button-flat mr-2" style="width: 6rem" />
-                <p:commandButton id="btnYes" type="button" value="Salvar" style="width: 5rem" />
-            </f:facet>
+                    <p:outputLabel value="Preço da compra"/>
+                    <p:inputNumber value="#{managerBem.bem.precoCompra}" symbol="R$"
+                                   decimalSeparator="," thousandSeparator="."/>
+
+                    <p:outputLabel for="basic" value="Data de compra" />
+                    <p:datePicker id="basic" value="#{managerBem.bem.dataCompra}" pattern="dd/MM/yyyy"/>
+
+                    <p:outputLabel value="Vida útil estimada"/>
+                    <p:inputNumber value="#{managerBem.bem.vidaUtil}"/>
+
+                    <p:outputLabel value="Valor residual">
+                        <p:commandButton type="button" id="animate" style="background: none; color: red; border: none; width: 12px; height: 12px; margin-left: 12px; position: absolute; margin-top: 3px" icon="pi pi-info-circle"/>
+                        <p:tooltip for="animate" value="Valor de sucata ou valor no fim da vida do produto" showEffect="clip" hideEffect="fold" />
+                    </p:outputLabel>
+                    <p:inputNumber value="#{managerBem.bem.valorResidual}" symbol="R$"
+                                   decimalSeparator="," thousandSeparator="."/>
+
+                </div>
+
+                <p:commandButton value="Cancelar" onclick="PF('dlg3').hide()">
+                    <p:ajax update="dlgBem" resetValues="true"/>
+                </p:commandButton>
+
+                <p:defaultCommand target="botaoSalvarBem"/>
+
+                <p:commandButton id="botaoSalvarBem" value="Salvar" actionListener="#{managerBem.salvarBem()}" 
+                                 update="@form, bensDataTable" style="float: right">
+                </p:commandButton>
+
+
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog header="Adicionar Tipo" widgetVar="dlg4" minHeight="40" width="350" showEffect="fade" focus="btnYes2" closeOnEscape="true" closable="false">
+
+            <h:form id="formTipoProduto" >
+
+
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
+
+                    <p:outputLabel value="Nome"/>
+                    <p:inputText required="true" value="#{managerTipoProduto.tipoProduto.tipo}"/>
+
+                </div>
+
+
+                <p:commandButton value="Cancelar" onclick="PF('dlg4').hide()">
+                    <p:ajax update="formTipoProduto" resetValues="true"/>
+                </p:commandButton>
+
+                <p:defaultCommand target="botaoSalvarTipo"/>
+
+                <p:commandButton id="botaoSalvarTipo" value="Salvar" actionListener="#{managerTipoProduto.salvarTipo()}" 
+                                 update="@form, tiposDataTable" style="float: right">
+                </p:commandButton>
+
+            </h:form>
+
         </p:dialog>
     </h:body>
 </html>

@@ -28,6 +28,10 @@ public class ServiceGeneric<T> {
         return entityManager.createQuery("SELECT e FROM " + entidade.getName() + " e WHERE e.ativo = true").getResultList();
     }
 
+    public T findById(Long id) {
+        return entityManager.find(entidade, id);
+    }
+
     public Class<T> getEntidade() {
         return entidade;
     }

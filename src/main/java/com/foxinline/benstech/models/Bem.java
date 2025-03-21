@@ -24,7 +24,7 @@ public class Bem implements Serializable {
     private int vidaUtil;
     private double valorResidual;
     private boolean ativo;
-    
+
     {
         this.ativo = true;
     }
@@ -71,6 +71,42 @@ public class Bem implements Serializable {
 
     public double getValorResidual() {
         return valorResidual;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setNomeProduto(String nomeProduto) {
+        this.nomeProduto = nomeProduto;
+    }
+
+    public void setTipoProduto(TipoProduto tipoProduto) {
+        this.tipoProduto = tipoProduto;
+    }
+
+    public void setPrecoCompra(double precoCompra) {
+        this.precoCompra = precoCompra;
+    }
+
+    public void setDataCompra(LocalDate dataCompra) {
+        this.dataCompra = dataCompra;
+    }
+
+    public void setVidaUtil(int vidaUtil) {
+        this.vidaUtil = vidaUtil;
+    }
+
+    public void setValorResidual(double valorResidual) {
+        this.valorResidual = valorResidual;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 
 }
