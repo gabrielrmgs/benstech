@@ -9,7 +9,6 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Named
 @ViewScoped
@@ -20,6 +19,8 @@ public class ManagerTipoProduto implements Serializable {
 
     private TipoProduto tipoProduto;
     private List<TipoProduto> tipos;
+
+    private TipoProduto tipoSelecionado;
 
     @PostConstruct
     public void init() {
@@ -32,10 +33,16 @@ public class ManagerTipoProduto implements Serializable {
         serviceTipoProduto.salvar(this.tipoProduto);
         this.tipoProduto = new TipoProduto();
         this.tipos = serviceTipoProduto.findAll();
-
     }
 
-    public void onSaveTipo() {
+    public void inativarTipo(TipoProduto tipo) {
+        tipo.setAtivo(false);
+        serviceTipoProduto.atualizar(tipo);
+        this.tipos = serviceTipoProduto.findAll();
+    }
+
+    public void atualizarTipo() {
+        serviceTipoProduto.atualizar(tipoSelecionado);
         this.tipos = serviceTipoProduto.findAll();
     }
 
@@ -53,6 +60,26 @@ public class ManagerTipoProduto implements Serializable {
 
     public List<TipoProduto> getTipos() {
         return tipos;
+    }
+
+    public void setServiceTipoProduto(ServiceTipoProduto serviceTipoProduto) {
+        this.serviceTipoProduto = serviceTipoProduto;
+    }
+
+    public void setTipoProduto(TipoProduto tipoProduto) {
+        this.tipoProduto = tipoProduto;
+    }
+
+    public void setTipos(List<TipoProduto> tipos) {
+        this.tipos = tipos;
+    }
+
+    public TipoProduto getTipoSelecionado() {
+        return tipoSelecionado;
+    }
+
+    public void setTipoSelecionado(TipoProduto tipoSelecionado) {
+        this.tipoSelecionado = tipoSelecionado;
     }
 
 }

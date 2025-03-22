@@ -27,13 +27,6 @@
             <classifier>jakarta</classifier>
         </dependency>
         
-        <!-- https://mvnrepository.com/artifact/org.omnifaces/omnifaces -->
-        <dependency>
-            <groupId>org.omnifaces</groupId>
-            <artifactId>omnifaces</artifactId>
-            <version>5.0-M2</version>
-        </dependency>
-        
     </dependencies>
     
     <build>

@@ -1,5 +1,6 @@
 package com.foxinline.benstech.services;
 
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;

@@ -43,10 +43,11 @@
 
         </p:megaMenu>
 
-        <p:commandButton value="Novo ativo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlg3').show()"/>
-        <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlg4').show()" style="margin-left: 24px"/>
+        <p:commandButton value="Novo ativo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarBem').show()"/>
+        <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="margin-left: 24px"/>
 
         <p:dataTable id="bensDataTable" var="bemDt" value="#{managerBem.bens}"  style="margin-top: 24px">
+
             <p:column headerText="Nome do produto">
                 <h:outputText value="#{bemDt.nomeProduto}" />
             </p:column>
@@ -68,16 +69,25 @@
             <p:column headerText="Depreciação Acumulada">
                 <h:outputText value="#{bemDt.calcularDepreciacaoAnual()}" />
             </p:column>
+            <p:column headerText="Ações">
+                <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#"/>
+                <p:commandButton icon="pi pi-trash" actionListener="#{managerBem.inativarBem(bemDt)}" update="bensDataTable"/>
+            </p:column>
         </p:dataTable>
 
         <p:dataTable id="tiposDataTable" var="tipoDt" value="#{managerTipoProduto.tipos}"  style="margin-top: 24px">
             <p:column headerText="Tipo">
                 <h:outputText value="#{tipoDt.tipo}" />
             </p:column>
+            <p:column headerText="Ações">
+                <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerTipoProduto.setTipoSelecionado(tipoDt)}"
+                                 update="formEditarTipoProduto" onclick="PF('dlgEditarTipo').show()"/>
+                <p:commandButton icon="pi pi-trash" actionListener="#{managerTipoProduto.inativarTipo(tipoDt)}" update="tiposDataTable"/>
+            </p:column>
         </p:dataTable>
 
-        <p:dialog header="Adicionar bem" widgetVar="dlg3" minHeight="40" width="350" showEffect="fade" focus="btnYes" closeOnEscape="true">
-            <h:form id="dlgBem" >
+        <p:dialog header="Adicionar bem" widgetVar="dlgAdicionarBem" minHeight="40" width="350" showEffect="fade" focus="btnYes" closeOnEscape="true">
+            <h:form id="formAdicionarBem" >
 
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
 
@@ -109,8 +119,8 @@
 
                 </div>
 
-                <p:commandButton value="Cancelar" onclick="PF('dlg3').hide()">
-                    <p:ajax update="dlgBem" resetValues="true"/>
+                <p:commandButton value="Cancelar" onclick="PF('dlgAdicionarBem').hide()">
+                    <p:ajax update="formAdicionarBem" resetValues="true"/>
                 </p:commandButton>
 
                 <p:defaultCommand target="botaoSalvarBem"/>
@@ -124,7 +134,7 @@
 
         </p:dialog>
 
-        <p:dialog header="Adicionar Tipo" widgetVar="dlg4" minHeight="40" width="350" showEffect="fade" focus="btnYes2" closeOnEscape="true" closable="false">
+        <p:dialog header="Adicionar Tipo" widgetVar="dlgAdicionarTipo" minHeight="40" width="350" showEffect="fade" focus="btnYes2" closeOnEscape="true" closable="false">
 
             <h:form id="formTipoProduto" >
 
@@ -137,13 +147,39 @@
                 </div>
 
 
-                <p:commandButton value="Cancelar" onclick="PF('dlg4').hide()">
+                <p:commandButton value="Cancelar" onclick="PF('dlgAdicionarTipo').hide()">
                     <p:ajax update="formTipoProduto" resetValues="true"/>
                 </p:commandButton>
 
                 <p:defaultCommand target="botaoSalvarTipo"/>
 
                 <p:commandButton id="botaoSalvarTipo" value="Salvar" actionListener="#{managerTipoProduto.salvarTipo()}" 
+                                 update="@form, tiposDataTable" style="float: right">
+                </p:commandButton>
+
+            </h:form>
+
+        </p:dialog>
+        <p:dialog header="Editar Tipo" widgetVar="dlgEditarTipo" minHeight="40" width="350" showEffect="fade" focus="btnYes2" closeOnEscape="true" closable="false">
+
+            <h:form id="formEditarTipoProduto" >
+
+
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
+
+                    <p:outputLabel value="Nome"/>
+                    <p:inputText required="true" value="#{managerTipoProduto.tipoSelecionado.tipo}"/>
+
+                </div>
+
+
+                <p:commandButton value="Cancelar" onclick="PF('dlgEditarTipo').hide()">
+                    <p:ajax update="formEditarTipoProduto" resetValues="true"/>
+                </p:commandButton>
+
+                <p:defaultCommand target="botaoEditarTipo"/>
+
+                <p:commandButton id="botaoEditarTipo" value="Atualizar" actionListener="#{managerTipoProduto.atualizarTipo()}" 
                                  update="@form, tiposDataTable" style="float: right">
                 </p:commandButton>
 

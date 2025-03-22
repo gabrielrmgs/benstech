@@ -48,6 +48,13 @@ public class ManagerBem implements Serializable {
         this.bens = serviceBem.findAll();
     }
 
+    public void inativarBem(Bem bem) {
+        bem.setAtivo(false);
+        serviceBem.atualizar(bem);
+        this.bens = serviceBem.findAll();
+
+    }
+
     public ServiceBem getServiceBem() {
         return serviceBem;
     }
