@@ -43,7 +43,6 @@ public class ManagerTipoProduto implements Serializable {
 
     public void atualizarTipo() {
         serviceTipoProduto.atualizar(tipoSelecionado);
-        this.tipos = serviceTipoProduto.findAll();
     }
 
     public List<TipoProduto> buscarTodosTipos() {

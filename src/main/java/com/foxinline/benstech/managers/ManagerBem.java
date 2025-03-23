@@ -26,6 +26,7 @@ public class ManagerBem implements Serializable {
     private List<Bem> bens;
     private String idTipoSelecionado;
     private TipoProduto tipoSelecionado;
+    private Bem bemSelecionado;
 
     @PostConstruct
     public void init() {
@@ -33,6 +34,7 @@ public class ManagerBem implements Serializable {
         this.bens = new ArrayList<>();
         this.bens = serviceBem.findAll();
         this.tipoSelecionado = new TipoProduto();
+        this.bemSelecionado = new Bem();
 
     }
 
@@ -40,8 +42,13 @@ public class ManagerBem implements Serializable {
         this.tipoSelecionado = serviceTipoProduto.findById(Long.valueOf(idTipoSelecionado));
         this.bem.setTipoProduto(tipoSelecionado);
         serviceBem.salvar(this.bem);
-        this.bem = new Bem();
         this.bens = serviceBem.findAll();
+        this.bem = new Bem();
+        this.tipoSelecionado = new TipoProduto();
+    }
+    
+    public void atualizarBem() {
+        serviceBem.atualizar(this.bemSelecionado);
     }
 
     public void buscarTodosBens() {
@@ -82,5 +89,23 @@ public class ManagerBem implements Serializable {
     public void setIdTipoSelecionado(String idTipoSelecionado) {
         this.idTipoSelecionado = idTipoSelecionado;
     }
+
+    public ServiceTipoProduto getServiceTipoProduto() {
+        return serviceTipoProduto;
+    }
+
+    public void setServiceTipoProduto(ServiceTipoProduto serviceTipoProduto) {
+        this.serviceTipoProduto = serviceTipoProduto;
+    }
+
+    public Bem getBemSelecionado() {
+        return bemSelecionado;
+    }
+
+    public void setBemSelecionado(Bem bemSelecionado) {
+        this.bemSelecionado = bemSelecionado;
+    }
+    
+    
 
 }

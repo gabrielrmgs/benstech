@@ -1,5 +1,6 @@
 com/foxinline/benstech/services/ServiceTipoProduto.class
 com/foxinline/benstech/services/ServiceBem.class
+com/foxinline/benstech/managers/ManagerGrafico.class
 com/foxinline/benstech/JakartaRestConfiguration.class
 com/foxinline/benstech/services/ServiceGeneric.class
 com/foxinline/benstech/managers/ManagerTipoProduto.class
