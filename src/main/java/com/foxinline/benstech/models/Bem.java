@@ -8,6 +8,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -43,6 +44,38 @@ public class Bem implements Serializable {
 
     public double calcularDepreciacaoAnual() {
         return (this.precoCompra - this.valorResidual) / this.vidaUtil;
+    }
+
+    public boolean bemParaManutenção() {
+        return (LocalDate.now().getYear() - this.dataCompra.getYear()) >= (this.vidaUtil * 0.75);
+    }
+
+    public String calcularTotalDepreciacaoAtual() {
+//        return (LocalDate.now().getYear() - this.dataCompra.getYear()) * this.calcularDepreciacaoAnual();
+        int meses = 0;
+        meses += (LocalDate.now().getYear() - this.dataCompra.getYear()) * 12;
+        meses += (LocalDate.now().getMonthValue() - this.dataCompra.getMonthValue());
+
+        double calculoFinal = calcularDepreciacaoMensal() * meses;
+        String valorFormatado = String.format("%.2f", calculoFinal);
+        System.out.println(valorFormatado);
+
+        return valorFormatado;
+    }
+
+    public double calcularDepreciacaoPorAno(int ano) {
+        if (ano < this.dataCompra.getYear()) {
+            throw new IllegalArgumentException("Ano selecionado é menor que o ano da compra!");
+        }
+        return (ano - this.dataCompra.getYear()) * calcularDepreciacaoAnual();
+    }
+
+    public double calcularValorAtualDoBem() {
+        return this.precoCompra - Double.parseDouble(calcularTotalDepreciacaoAtual().replace(",", "."));
+    }
+
+    public double calcularDepreciacaoMensal() {
+        return this.calcularDepreciacaoAnual() / 12;
     }
 
     public Long getId() {
@@ -107,6 +140,61 @@ public class Bem implements Serializable {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.id);
+        hash = 59 * hash + Objects.hashCode(this.nomeProduto);
+        hash = 59 * hash + Objects.hashCode(this.tipoProduto);
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.precoCompra) ^ (Double.doubleToLongBits(this.precoCompra) >>> 32));
+        hash = 59 * hash + Objects.hashCode(this.dataCompra);
+        hash = 59 * hash + this.vidaUtil;
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.valorResidual) ^ (Double.doubleToLongBits(this.valorResidual) >>> 32));
+        hash = 59 * hash + (this.ativo ? 1 : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Bem other = (Bem) obj;
+        if (Double.doubleToLongBits(this.precoCompra) != Double.doubleToLongBits(other.precoCompra)) {
+            return false;
+        }
+        if (this.vidaUtil != other.vidaUtil) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.valorResidual) != Double.doubleToLongBits(other.valorResidual)) {
+            return false;
+        }
+        if (this.ativo != other.ativo) {
+            return false;
+        }
+        if (!Objects.equals(this.nomeProduto, other.nomeProduto)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.tipoProduto, other.tipoProduto)) {
+            return false;
+        }
+        return Objects.equals(this.dataCompra, other.dataCompra);
+    }
+
+    @Override
+    public String toString() {
+        return "Bem{" + "id=" + id + ", nomeProduto=" + nomeProduto + ", tipoProduto=" + tipoProduto + ", precoCompra=" + precoCompra + ", dataCompra=" + dataCompra + ", vidaUtil=" + vidaUtil + ", valorResidual=" + valorResidual + ", ativo=" + ativo + '}';
     }
 
 }

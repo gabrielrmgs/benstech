@@ -31,7 +31,7 @@
                 <p:column>
                     <p:submenu label="Relatórios">
                         <p:menuitem value="Relatório de Manutenção" url="relatorioManutencao.xhtml"/>
-                        <p:menuitem value="Relatório Valor x Depreciação"/>
+                        <p:menuitem value="Relatório Valor X Depreciação" url="relatorioValorDepreciacao.xhtml"/>
                     </p:submenu>
                 </p:column>
 
@@ -59,6 +59,8 @@
                 
                 <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
                     <p:card style="width: 990px;" title="Relatório de Bens para manutenção" >
+                        
+                        
                         <p:dataTable id="manutencaoDataTable" var="manutencaoDt" value="#{managerRelatorio.bensManutencao}"  >
                             <p:column headerText="Nome do produto">
                                 <h:outputText value="#{manutencaoDt.nomeProduto}" />
@@ -74,6 +76,12 @@
                             </p:column>
                             <p:column headerText="Valor residual">
                                 <h:outputText value="#{manutencaoDt.valorResidual}" />
+                            </p:column>
+                            <p:column headerText="Depreciação Total">
+                                <h:outputText value="#{manutencaoDt.calcularTotalDepreciacaoAtual()}" />
+                            </p:column>
+                            <p:column headerText="Valor atual do bem">
+                                <h:outputText value="#{manutencaoDt.calcularValorAtualDoBem()}" />
                             </p:column>
 
 

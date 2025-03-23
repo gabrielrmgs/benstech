@@ -33,8 +33,8 @@ public class ManagerRelatorio implements Serializable {
         this.bensManutencao = new ArrayList<>();
         List<Bem> bensTotal = serviceBem.findAll();
         for (Bem bem : bensTotal) {
-            if ((LocalDate.now().getYear() - bem.getDataCompra().getYear()) >= (bem.getVidaUtil() * 0.75)) {
-                this.bensManutencao.add(bem);
+            if(bem.bemParaManutenção()){
+                bensManutencao.add(bem);
             }
         }
     }

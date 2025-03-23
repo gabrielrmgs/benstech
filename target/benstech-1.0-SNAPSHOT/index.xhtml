@@ -52,12 +52,12 @@
             </p:submenu>
 
         </p:megaMenu>
-        <div style="display: flex;margin-left: 51px ">
+        <div style="display: flex;align-items: center; justify-content: center ">
             <p:commandButton value="Novo ativo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarBem').show()"/>
-            <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="margin-left: 24px"/>
+            <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="margin-left: 24px; display: none" />
         </div>
         <div style="display: flex; align-items: center; justify-content: center; margin-top: 18px">
-            <p:card style="width: 1800px;">
+            <p:card style="width: 1410px;">
                 <p:dataTable id="bensDataTable" var="bemDt" value="#{managerBem.bens}">
 
                     <p:column headerText="Nome do produto">
@@ -66,30 +66,29 @@
                     <p:column headerText="Tipo">
                         <h:outputText value="#{bemDt.tipoProduto}" />
                     </p:column>
+                    <p:column headerText="Data da compra">
+                        <h:outputText value="#{bemDt.dataCompra}" />
+                    </p:column>
                     <p:column headerText="Preço da compra">
                         <h:outputText value="#{bemDt.precoCompra}" />
                     </p:column>
-                    <p:column headerText="Valor residual">
-                        <h:outputText value="#{bemDt.valorResidual}" />
-                    </p:column>
+                    
                     <p:column headerText="Vida Útil">
                         <h:outputText value="#{bemDt.vidaUtil}" />
                     </p:column>
-                    <p:column headerText="Depreciação Anual">
-                        <h:outputText value="#{bemDt.calcularDepreciacaoAnual()}" />
-                    </p:column>
-                    <p:column headerText="Depreciação Acumulada">
-                        <h:outputText value="#{bemDt.calcularDepreciacaoAnual()}" />
-                    </p:column>
+                   
                     <p:column headerText="Ações">
+                        <p:commandButton icon="pi pi-search" style="margin-right: 9px" actionListener="#{managerBem.setBemSelecionado(bemDt)}"
+                                         onclick=""/>
                         <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerBem.setBemSelecionado(bemDt)}"
                                          update="formEditarBem" onclick="PF('dlgEditarBem').show()"/>
-                        <p:commandButton icon="pi pi-trash" actionListener="#{managerBem.inativarBem(bemDt)}" onclick="#{managerGrafico.init()}" update="bensDataTable, graficoPizza"/>
+                        <p:commandButton icon="pi pi-trash" actionListener="#{managerBem.inativarBem(bemDt)}" 
+                                         onclick="#{managerGrafico.init()}" update="bensDataTable, graficoPizza"/>
                     </p:column>
                 </p:dataTable>
             </p:card>
         </div>
-        <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
+        <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px; display: none"> 
             <p:card style="width: 990px">
                 <p:dataTable id="tiposDataTable" var="tipoDt" value="#{managerTipoProduto.tipos}"  >
                     <p:column headerText="Tipo">
@@ -103,7 +102,7 @@
                 </p:dataTable>
             </p:card>
         </div>
-        <div style="width: 360px; height: 360px; margin-top: 39px; margin-left: 51px;">
+        <div style="width: 360px; height: 360px; margin-top: 39px; margin-left: 51px; display: none">
             <p:chart id="graficoPizza" value="#{managerGrafico.pieModel}"/>
         </div>
 
