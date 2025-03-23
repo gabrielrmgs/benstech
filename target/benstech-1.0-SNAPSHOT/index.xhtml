@@ -29,13 +29,9 @@
             <p:submenu label="Relatórios" icon="pi pi-fw pi-chart-line">
 
                 <p:column>
-                    <p:submenu label="User 1">
-                        <p:menuitem value="User 1.1"/>
-                        <p:menuitem value="User 1.2"/>
-                    </p:submenu>
-                    <p:submenu label="User 2">
-                        <p:menuitem value="User 2.1"/>
-                        <p:menuitem value="User 2.2"/>
+                    <p:submenu label="Relatórios">
+                        <p:menuitem value="Relatório de Manutenção" url="relatorioManutencao.xhtml"/>
+                        <p:menuitem value="Relatório Valor x Depreciação"/>
                     </p:submenu>
                 </p:column>
 
@@ -56,53 +52,58 @@
             </p:submenu>
 
         </p:megaMenu>
+        <div style="display: flex;margin-left: 51px ">
+            <p:commandButton value="Novo ativo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarBem').show()"/>
+            <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="margin-left: 24px"/>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center; margin-top: 18px">
+            <p:card style="width: 1800px;">
+                <p:dataTable id="bensDataTable" var="bemDt" value="#{managerBem.bens}">
 
-        <p:commandButton value="Novo ativo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarBem').show()"/>
-        <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="margin-left: 24px"/>
-
-        <p:card style="width: 1800px; align-self:">
-            <p:dataTable id="bensDataTable" var="bemDt" value="#{managerBem.bens}"  style="margin-top: 24px">
-
-                <p:column headerText="Nome do produto">
-                    <h:outputText value="#{bemDt.nomeProduto}" />
-                </p:column>
-                <p:column headerText="Tipo">
-                    <h:outputText value="#{bemDt.tipoProduto}" />
-                </p:column>
-                <p:column headerText="Preço da compra">
-                    <h:outputText value="#{bemDt.precoCompra}" />
-                </p:column>
-                <p:column headerText="Valor residual">
-                    <h:outputText value="#{bemDt.valorResidual}" />
-                </p:column>
-                <p:column headerText="Vida Útil">
-                    <h:outputText value="#{bemDt.vidaUtil}" />
-                </p:column>
-                <p:column headerText="Depreciação Anual">
-                    <h:outputText value="#{bemDt.calcularDepreciacaoAnual()}" />
-                </p:column>
-                <p:column headerText="Depreciação Acumulada">
-                    <h:outputText value="#{bemDt.calcularDepreciacaoAnual()}" />
-                </p:column>
-                <p:column headerText="Ações">
-                    <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerBem.setBemSelecionado(bemDt)}"
-                                     update="formEditarBem" onclick="PF('dlgEditarBem').show()"/>
-                    <p:commandButton icon="pi pi-trash" actionListener="#{managerBem.inativarBem(bemDt)}" onclick="#{managerGrafico.init()}" update="bensDataTable, graficoPizza"/>
-                </p:column>
-            </p:dataTable>
-        </p:card>
-        <p:dataTable id="tiposDataTable" var="tipoDt" value="#{managerTipoProduto.tipos}"  style="margin-top: 24px">
-            <p:column headerText="Tipo">
-                <h:outputText value="#{tipoDt.tipo}" />
-            </p:column>
-            <p:column headerText="Ações">
-                <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerTipoProduto.setTipoSelecionado(tipoDt)}"
-                                 update="formEditarTipoProduto" onclick="PF('dlgEditarTipo').show()"/>
-                <p:commandButton icon="pi pi-trash" actionListener="#{managerTipoProduto.inativarTipo(tipoDt)}" onclick="#{managerGrafico.init()}" update="tiposDataTable, graficoPizza"/>
-            </p:column>
-        </p:dataTable>
-
-        <div style="width: 340px; height: 340px; margin-top: 39px; margin-left: 51px;">
+                    <p:column headerText="Nome do produto">
+                        <h:outputText value="#{bemDt.nomeProduto}" />
+                    </p:column>
+                    <p:column headerText="Tipo">
+                        <h:outputText value="#{bemDt.tipoProduto}" />
+                    </p:column>
+                    <p:column headerText="Preço da compra">
+                        <h:outputText value="#{bemDt.precoCompra}" />
+                    </p:column>
+                    <p:column headerText="Valor residual">
+                        <h:outputText value="#{bemDt.valorResidual}" />
+                    </p:column>
+                    <p:column headerText="Vida Útil">
+                        <h:outputText value="#{bemDt.vidaUtil}" />
+                    </p:column>
+                    <p:column headerText="Depreciação Anual">
+                        <h:outputText value="#{bemDt.calcularDepreciacaoAnual()}" />
+                    </p:column>
+                    <p:column headerText="Depreciação Acumulada">
+                        <h:outputText value="#{bemDt.calcularDepreciacaoAnual()}" />
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerBem.setBemSelecionado(bemDt)}"
+                                         update="formEditarBem" onclick="PF('dlgEditarBem').show()"/>
+                        <p:commandButton icon="pi pi-trash" actionListener="#{managerBem.inativarBem(bemDt)}" onclick="#{managerGrafico.init()}" update="bensDataTable, graficoPizza"/>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
+            <p:card style="width: 990px">
+                <p:dataTable id="tiposDataTable" var="tipoDt" value="#{managerTipoProduto.tipos}"  >
+                    <p:column headerText="Tipo">
+                        <h:outputText value="#{tipoDt.tipo}" />
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerTipoProduto.setTipoSelecionado(tipoDt)}"
+                                         update="formEditarTipoProduto" onclick="PF('dlgEditarTipo').show()"/>
+                        <p:commandButton icon="pi pi-trash" actionListener="#{managerTipoProduto.inativarTipo(tipoDt)}" onclick="#{managerGrafico.init()}" update="tiposDataTable, graficoPizza"/>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+        </div>
+        <div style="width: 360px; height: 360px; margin-top: 39px; margin-left: 51px;">
             <p:chart id="graficoPizza" value="#{managerGrafico.pieModel}"/>
         </div>
 
@@ -259,29 +260,29 @@
     </h:body>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script>
-                                     function chartExtender() {
-                                         var options = {
-                                             plugins: [ChartDataLabels],
-                                             options: {
-                                                 plugins: {
-                                                     // Change options for ALL labels of THIS CHART
-                                                     datalabels: {
-                                                         color: 'HotPink'
-                                                     }
-                                                 }
-                                             },
-                                             data: {
-                                                 datasets: [{
-                                                         // Change options only for labels of THIS DATASET
-                                                         datalabels: {
-                                                             color: 'Indigo'
+                                             function chartExtender() {
+                                                 var options = {
+                                                     plugins: [ChartDataLabels],
+                                                     options: {
+                                                         plugins: {
+                                                             // Change options for ALL labels of THIS CHART
+                                                             datalabels: {
+                                                                 color: 'HotPink'
+                                                             }
                                                          }
-                                                     }]
-                                             }
-                                         };
+                                                     },
+                                                     data: {
+                                                         datasets: [{
+                                                                 // Change options only for labels of THIS DATASET
+                                                                 datalabels: {
+                                                                     color: 'Indigo'
+                                                                 }
+                                                             }]
+                                                     }
+                                                 };
 
-                                         //merge all options into the main chart options
-                                         $.extend(true, this.cfg.config, options);
-                                     }
+                                                 //merge all options into the main chart options
+                                                 $.extend(true, this.cfg.config, options);
+                                             }
     </script>
 </html>

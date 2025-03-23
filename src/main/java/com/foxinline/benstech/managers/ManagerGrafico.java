@@ -9,11 +9,8 @@ import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,19 +61,6 @@ public class ManagerGrafico implements Serializable {
         createPieModel();
     }
 
-//    public void atualizaGrafico() {
-//        tipos = new ArrayList<>();
-//
-//        tipos = serviceTipoProduto.findAll();
-//        nomesTipos = new ArrayList<>();
-//        for (TipoProduto t : tipos) {
-//            nomesTipos.add(t.getTipo());
-//        }
-//
-//        bensPorTipo = new ArrayList<>();
-//        bensPorTipo = serviceBem.findAll();
-//    }
-
     private void createPieModel() {
         Map<String, Integer> mapTipos = new HashMap<>();
         Color[] cores = new Color[nomesTipos.size()];
@@ -86,11 +70,20 @@ public class ManagerGrafico implements Serializable {
             cores[nomesTipos.indexOf(s)] = (new Color(Color.random(), 1));
         }
 
+        nomesTipos = new ArrayList<>();
+        mapTipos.forEach((t, u) -> {
+
+            nomesTipos.add(t);
+        });
         for (Bem bem : bensPorTipo) {
             if (nomesTipos.contains(bem.getTipoProduto().getTipo())) {
                 mapTipos.replace(bem.getTipoProduto().getTipo(), mapTipos.get(bem.getTipoProduto().getTipo()) + 1);
             }
         }
+
+        System.out.println(nomesTipos);
+        System.out.println(mapTipos.toString());
+        System.out.println(mapTipos.values());
         pieModel = new PieChart()
                 .setData(new PieData()
                         .addDataset(new PieDataset()

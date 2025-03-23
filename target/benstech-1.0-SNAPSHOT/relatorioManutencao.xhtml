@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Bens Tech</title>
+    </h:head>
+    <h:body>
+
+        <p:megaMenu orientation="horizontal" autoDisplay="false" style="margin-bottom: 18px">
+            <f:facet name="start">
+                <p:graphicImage value="assets/logoBranca.png" width="210" height="54"/>
+            </f:facet>
+            <p:submenu label="Inventário" icon="pi pi-fw pi-list" style="margin-top: 9px">
+                <p:column>
+                    <p:submenu label="Bem">
+                        <p:menuitem value="Cadastrar"/>
+                        <p:menuitem value="Pesquisar"/>
+                    </p:submenu>
+                    <p:submenu label="Tipo produto">
+                        <p:menuitem value="Cadastrar"/>
+                        <p:menuitem value="Pesquisar"/>
+                    </p:submenu>
+                </p:column>
+            </p:submenu>
+
+            <p:submenu label="Relatórios" icon="pi pi-fw pi-chart-line">
+
+                <p:column>
+                    <p:submenu label="Relatórios">
+                        <p:menuitem value="Relatório de Manutenção" url="relatorioManutencao.xhtml"/>
+                        <p:menuitem value="Relatório Valor x Depreciação"/>
+                    </p:submenu>
+                </p:column>
+
+            </p:submenu>
+            <p:submenu label="Configurações" icon="pi pi-fw pi-cog">
+
+                <p:column>
+                    <p:submenu label="User 1">
+                        <p:menuitem value="User 1.1"/>
+                        <p:menuitem value="User 1.2"/>
+                    </p:submenu>
+                    <p:submenu label="User 2">
+                        <p:menuitem value="User 2.1"/>
+                        <p:menuitem value="User 2.2"/>
+                    </p:submenu>
+                </p:column>
+
+            </p:submenu>
+
+        </p:megaMenu>
+
+        <div class="card">
+
+            <h:form id="form">
+                
+                <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
+                    <p:card style="width: 990px;" title="Relatório de Bens para manutenção" >
+                        <p:dataTable id="manutencaoDataTable" var="manutencaoDt" value="#{managerRelatorio.bensManutencao}"  >
+                            <p:column headerText="Nome do produto">
+                                <h:outputText value="#{manutencaoDt.nomeProduto}" />
+                            </p:column>
+                            <p:column headerText="Tipo do produto">
+                                <h:outputText value="#{manutencaoDt.tipoProduto}" />
+                            </p:column>
+                            <p:column headerText="Data da compra">
+                                <h:outputText value="#{manutencaoDt.dataCompra}" />
+                            </p:column>
+                            <p:column headerText="Preço da compra">
+                                <h:outputText value="#{manutencaoDt.precoCompra}" />
+                            </p:column>
+                            <p:column headerText="Valor residual">
+                                <h:outputText value="#{manutencaoDt.valorResidual}" />
+                            </p:column>
+
+
+                        </p:dataTable>
+                    </p:card>
+                </div>
+                <div style="display: flex;align-items: center; justify-content: center ; margin-top: 18px">
+                    <p:commandButton value="Baixar PDF" type="button" icon="pi pi-plus" iconPos="rigth" style="margin-left: 24px"/>
+                    <p:commandButton value="Baixar XML" type="button" icon="pi pi-plus" iconPos="rigth" style="margin-left: 24px"/>
+                </div>
+            </h:form>
+        </div>
+
+
+
+    </h:body>
+
+</html>

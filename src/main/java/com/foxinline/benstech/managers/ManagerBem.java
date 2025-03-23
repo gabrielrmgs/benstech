@@ -46,7 +46,7 @@ public class ManagerBem implements Serializable {
         this.bem = new Bem();
         this.tipoSelecionado = new TipoProduto();
     }
-    
+
     public void atualizarBem() {
         serviceBem.atualizar(this.bemSelecionado);
     }
@@ -105,7 +105,5 @@ public class ManagerBem implements Serializable {
     public void setBemSelecionado(Bem bemSelecionado) {
         this.bemSelecionado = bemSelecionado;
     }
-    
-    
 
 }
