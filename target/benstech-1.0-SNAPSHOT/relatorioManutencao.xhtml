@@ -54,11 +54,11 @@
         <div class="card">
 
             <h:form id="form">
-                
+
                 <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
                     <p:card style="width: 990px;" title="Relatório de Bens para manutenção" >
-                        
-                        
+
+
                         <p:dataTable id="manutencaoDataTable" var="manutencaoDt" value="#{managerRelatorio.bensManutencao}"  >
                             <p:column headerText="Nome do produto">
                                 <h:outputText value="#{manutencaoDt.nomeProduto}" />
@@ -87,8 +87,9 @@
                     </p:card>
                 </div>
                 <div style="display: flex;align-items: center; justify-content: center ; margin-top: 18px">
-                    <p:commandButton value="Baixar PDF" type="button" icon="pi pi-plus" iconPos="rigth" style="margin-left: 24px"/>
-                    <p:commandButton value="Baixar XML" type="button" icon="pi pi-plus" iconPos="rigth" style="margin-left: 24px"/>
+                    <p:commandButton value="Baixar PDF" styleClass="mr-2 mb-2" icon="pi pi-file-pdf">
+                        <p:dataExporter type="pdf" target="manutencaoDataTable" fileName="produtosParaManutencao"/>
+                    </p:commandButton>
                 </div>
             </h:form>
         </div>
