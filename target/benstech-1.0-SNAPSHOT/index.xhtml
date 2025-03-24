@@ -16,12 +16,10 @@
             <p:submenu label="Inventário" icon="pi pi-fw pi-list" style="margin-top: 9px">
                 <p:column>
                     <p:submenu label="Bem">
-                        <p:menuitem value="Cadastrar"/>
-                        <p:menuitem value="Pesquisar"/>
+                        <p:menuitem value="Cadastrar" url="#"/>
                     </p:submenu>
                     <p:submenu label="Tipo produto">
-                        <p:menuitem value="Cadastrar"/>
-                        <p:menuitem value="Pesquisar"/>
+                        <p:menuitem value="Cadastrar" url="tipoProduto.xhtml"/>
                     </p:submenu>
                 </p:column>
             </p:submenu>
@@ -31,7 +29,7 @@
                 <p:column>
                     <p:submenu label="Relatórios">
                         <p:menuitem value="Relatório de Manutenção" url="relatorioManutencao.xhtml"/>
-                        <p:menuitem value="Relatório Valor x Depreciação"/>
+                        <p:menuitem value="Relatório Valor x Depreciação" url="relatorioValorDepreciacao.xhtml"/>
                     </p:submenu>
                 </p:column>
 
@@ -52,13 +50,17 @@
             </p:submenu>
 
         </p:megaMenu>
+
+
         <div style="display: flex;align-items: center; justify-content: center ">
             <p:commandButton value="Novo ativo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarBem').show()"/>
             <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="margin-left: 24px; display: none" />
         </div>
+
+
         <div style="display: flex; align-items: center; justify-content: center; margin-top: 18px">
-            <p:card style="width: 1410px;">
-                <p:dataTable id="bensDataTable" var="bemDt" value="#{managerBem.bens}">
+            <p:card style="width: 1410px; " title="Bens cadastrados">
+                <p:dataTable id="bensDataTable" var="bemDt" value="#{managerBem.bens}" paginator="true" rows="9" paginatorPosition="bottom">
 
                     <p:column headerText="Nome do produto">
                         <h:outputText value="#{bemDt.nomeProduto}" />
@@ -72,39 +74,27 @@
                     <p:column headerText="Preço da compra">
                         <h:outputText value="#{bemDt.precoCompra}" />
                     </p:column>
-                    
+
                     <p:column headerText="Vida Útil">
                         <h:outputText value="#{bemDt.vidaUtil}" />
                     </p:column>
-                   
+
                     <p:column headerText="Ações">
-                        <p:commandButton icon="pi pi-search" style="margin-right: 9px" actionListener="#{managerBem.setBemSelecionado(bemDt)}"
-                                         onclick=""/>
+                        <p:commandButton icon="pi pi-search" style="margin-right: 9px" action="#{managerDetalheBem.encaminharDetalhes(bemDt)}"/>
+
                         <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerBem.setBemSelecionado(bemDt)}"
-                                         update="formEditarBem" onclick="PF('dlgEditarBem').show()"/>
+                                         update="formEditarBem" onclick="PF('dlgEditarBem').show()" process="@this"/>
+
                         <p:commandButton icon="pi pi-trash" actionListener="#{managerBem.inativarBem(bemDt)}" 
-                                         onclick="#{managerGrafico.init()}" update="bensDataTable, graficoPizza"/>
+                                         onclick="#{managerGrafico.init()}" update="bensDataTable, graficoPizza" process="@this"/>
                     </p:column>
                 </p:dataTable>
             </p:card>
         </div>
-        <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px; display: none"> 
-            <p:card style="width: 990px">
-                <p:dataTable id="tiposDataTable" var="tipoDt" value="#{managerTipoProduto.tipos}"  >
-                    <p:column headerText="Tipo">
-                        <h:outputText value="#{tipoDt.tipo}" />
-                    </p:column>
-                    <p:column headerText="Ações">
-                        <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerTipoProduto.setTipoSelecionado(tipoDt)}"
-                                         update="formEditarTipoProduto" onclick="PF('dlgEditarTipo').show()"/>
-                        <p:commandButton icon="pi pi-trash" actionListener="#{managerTipoProduto.inativarTipo(tipoDt)}" onclick="#{managerGrafico.init()}" update="tiposDataTable, graficoPizza"/>
-                    </p:column>
-                </p:dataTable>
-            </p:card>
-        </div>
-        <div style="width: 360px; height: 360px; margin-top: 39px; margin-left: 51px; display: none">
-            <p:chart id="graficoPizza" value="#{managerGrafico.pieModel}"/>
-        </div>
+
+        <!--        <div style="width: 360px; height: 360px; margin-top: 39px; margin-left: 51px; display: none">
+                    <p:chart id="graficoPizza" value="#{managerGrafico.pieModel}"/>
+                </div>-->
 
         <p:dialog header="Adicionar bem" widgetVar="dlgAdicionarBem" minHeight="40" width="350" showEffect="fade" focus="btnYes" closeOnEscape="true">
             <h:form id="formAdicionarBem" >
@@ -132,7 +122,7 @@
 
                     <p:outputLabel value="Valor residual">
                         <p:commandButton type="button" id="animate" style="background: none; color: red; border: none; width: 12px; height: 12px; margin-left: 12px; position: absolute; margin-top: 3px" icon="pi pi-info-circle"/>
-                        <p:tooltip for="animate" value="Valor de sucata ou valor no fim da vida do produto" showEffect="clip" hideEffect="fold" />
+                        <p:tooltip for="animate" value="O valor residual é o valor que o ativo terá no final de sua vida útil, e é uma estimativa." showEffect="clip" hideEffect="fold" />
                     </p:outputLabel>
                     <p:inputNumber value="#{managerBem.bem.valorResidual}" symbol="R$"
                                    decimalSeparator="," thousandSeparator="."/>
@@ -155,58 +145,7 @@
 
         </p:dialog>
 
-        <p:dialog header="Adicionar Tipo" widgetVar="dlgAdicionarTipo" minHeight="40" width="350" showEffect="fade" focus="btnYes2" closeOnEscape="true" closable="false">
 
-            <h:form id="formTipoProduto" >
-
-
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
-
-                    <p:outputLabel value="Nome"/>
-                    <p:inputText required="true" value="#{managerTipoProduto.tipoProduto.tipo}"/>
-
-                </div>
-
-
-                <p:commandButton value="Cancelar" onclick="PF('dlgAdicionarTipo').hide()">
-                    <p:ajax update="formTipoProduto" resetValues="true"/>
-                </p:commandButton>
-
-                <p:defaultCommand target="botaoSalvarTipo"/>
-
-                <p:commandButton id="botaoSalvarTipo" value="Salvar" actionListener="#{managerTipoProduto.salvarTipo()}" 
-                                 update="@form, tiposDataTable, graficoPizza" style="float: right" onclick="#{managerGrafico.init()}">
-                </p:commandButton>
-
-            </h:form>
-
-        </p:dialog>
-        <p:dialog header="Editar Tipo" widgetVar="dlgEditarTipo" minHeight="40" width="350" showEffect="fade" focus="btnYes2" closeOnEscape="true" closable="false">
-
-            <h:form id="formEditarTipoProduto" >
-
-
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
-
-                    <p:outputLabel value="Nome"/>
-                    <p:inputText required="true" value="#{managerTipoProduto.tipoSelecionado.tipo}"/>
-
-                </div>
-
-
-                <p:commandButton value="Cancelar" onclick="PF('dlgEditarTipo').hide()">
-                    <p:ajax update="formEditarTipoProduto" resetValues="true"/>
-                </p:commandButton>
-
-                <p:defaultCommand target="botaoEditarTipo"/>
-
-                <p:commandButton id="botaoEditarTipo" value="Atualizar" actionListener="#{managerTipoProduto.atualizarTipo()}" 
-                                 update="@form, tiposDataTable, graficoPizza" style="float: right" onclick="#{managerGrafico.init()}">
-                </p:commandButton>
-
-            </h:form>
-
-        </p:dialog>
 
         <p:dialog header="Editar bem" widgetVar="dlgEditarBem" minHeight="40" width="350" showEffect="fade" focus="btnYes" closeOnEscape="true">
             <h:form id="formEditarBem" >
@@ -234,7 +173,7 @@
 
                     <p:outputLabel value="Valor residual">
                         <p:commandButton type="button" id="animate" style="background: none; color: red; border: none; width: 12px; height: 12px; margin-left: 12px; position: absolute; margin-top: 3px" icon="pi pi-info-circle"/>
-                        <p:tooltip for="animate" value="Valor de sucata ou valor no fim da vida do produto" showEffect="clip" hideEffect="fold" />
+                        <p:tooltip for="animate" value="O valor residual é o valor que o ativo terá no final de sua vida útil, e é uma estimativa." showEffect="clip" hideEffect="fold" />
                     </p:outputLabel>
                     <p:inputNumber value="#{managerBem.bemSelecionado.valorResidual}" symbol="R$"
                                    decimalSeparator="," thousandSeparator="."/>

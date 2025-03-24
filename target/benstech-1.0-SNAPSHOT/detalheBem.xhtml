@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Bens Tech</title>
+    </h:head>
+    <h:body>
+        <style>
+            .legacy .ui-panel, .legacy.div.ui-state-hover {
+                margin: 10px;
+            }
+            .legacy .ui-dashboard-column {
+                width: 220px;
+            }
+            .ui-dashboard-active {
+                border-color: var(--primary-color);
+                border-width: 3px !important;
+                border-style: dashed;
+            }
+            .ui-dashboard-hover {
+                border-color: #C2E085;
+                border-width: 3px !important;
+                border-style: solid;
+            }
+            body .ui-panel.chart-dashlet .ui-panel-content .ui-chart {
+                height: 250px;
+                max-height: 250px;
+            }
+        </style>
+
+        <p:megaMenu orientation="horizontal" autoDisplay="false" style="margin-bottom: 18px">
+            <f:facet name="start">
+                <p:graphicImage value="assets/logoBranca.png" width="210" height="54"/>
+            </f:facet>
+            <p:submenu label="Inventário" icon="pi pi-fw pi-list" style="margin-top: 9px">
+                <p:column>
+                    <p:submenu label="Bem">
+                        <p:menuitem value="Cadastrar" url="index.xhtml"/>
+                    </p:submenu>
+                    <p:submenu label="Tipo produto">
+                        <p:menuitem value="Cadastrar" url="tipoProduto.xhtml"/>
+                    </p:submenu>
+                </p:column>
+            </p:submenu>
+
+            <p:submenu label="Relatórios" icon="pi pi-fw pi-chart-line">
+
+                <p:column>
+                    <p:submenu label="Relatórios">
+                        <p:menuitem value="Relatório de Manutenção" url="relatorioManutencao.xhtml"/>
+                        <p:menuitem value="Relatório Valor X Depreciação" url="relatorioValorDepreciacao.xhtml"/>
+                    </p:submenu>
+                </p:column>
+
+            </p:submenu>
+            <p:submenu label="Configurações" icon="pi pi-fw pi-cog">
+
+                <p:column>
+                    <p:submenu label="User 1">
+                        <p:menuitem value="User 1.1"/>
+                        <p:menuitem value="User 1.2"/>
+                    </p:submenu>
+                    <p:submenu label="User 2">
+                        <p:menuitem value="User 2.1"/>
+                        <p:menuitem value="User 2.2"/>
+                    </p:submenu>
+                </p:column>
+
+            </p:submenu>
+
+        </p:megaMenu>
+
+        <div class="card">
+
+            <h:form id="form">
+
+                <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
+                    <p:card style="width: 990px;" title="Detalhes #{managerDetalheBem.bemSelecionado.nomeProduto}" >
+                        <p:panelGrid columns="3" layout="grid" styleClass="showcase-text-align-center">
+                            <h:outputText value="Data da compra: #{managerDetalheBem.bemSelecionado.dataCompra}"/>
+                            <h:outputText value="Tipo: #{managerDetalheBem.bemSelecionado.tipoProduto}"/>
+                            <h:outputText value="Preço da compra: #{managerDetalheBem.bemSelecionado.precoCompra}"/>
+
+                            <h:outputText value="Vida útil: #{managerDetalheBem.bemSelecionado.vidaUtil} anos"/>
+                            <h:outputText value="Depreciação Anual do bem: #{managerDetalheBem.bemSelecionado.calcularDepreciacaoAnual()}"/>
+                            <h:outputText value="Total depreciado atualmente: #{managerDetalheBem.bemSelecionado.calcularTotalDepreciacaoAtual()}"/>
+
+                            <h:outputText value="Valor atual do bem: #{managerDetalheBem.bemSelecionado.calcularValorAtualDoBem()}"/>
+                            <h:outputText value="Valor residual: #{managerDetalheBem.bemSelecionado.valorResidual}"/>
+                            <h:outputText  id="manutencao" value="Manutenção recomendada: #{managerDetalheBem.bemSelecionado.bemParaManutenção()}"/>
+                        </p:panelGrid> 
+
+                    </p:card>
+                </div>
+
+            </h:form>
+        </div>
+        <h:form id="dashboard" style="display: flex; align-items: center; justify-content: center; margin-top: 24px">
+
+            <p:dashboard id="responsive" model="#{dashboardView.responsiveModel}" responsive="true" style="display: flex; flex-direction: row;
+                         align-items: center; justify-content: center; gap: 12px">
+                <p:ajax event="reorder" listener="#{dashboardView.handleReorder}" />
+
+                <p:panel id="vidaUtil" header="Porcentagem da vida útil restante" toggleable="true" styleClass="chart-dashlet" style="width: 360px" >
+                    <p:chart id="vidaUtilGrafico" value="#{managerGrafico.createPieModelVidaUtil(managerDetalheBem.bemSelecionado)}"  style="width: 100%; height: 100%;"/>
+                </p:panel>
+
+                <p:panel id="dpAnualAcumulada" header="Depreciação Anual vs. Depreciação Acumulada" toggleable="true" styleClass="chart-dashlet" style="width: 720px" >
+                    <p:chart id="dpAnualAcumuladaGrafico" value="#{managerGrafico.createBarModel(managerDetalheBem.bemSelecionado)}"  style="width: 100%; height: 100%;"/>
+                </p:panel>
+
+                <p:panel id="residualDepreciado" header="Valor Residual vs. Valor Depreciado" toggleable="true" styleClass="chart-dashlet" style="width: 540px" >
+                    <p:chart id="residualDepreciadoGrafico" value="#{managerGrafico.createLineModelResidualxDepreciado(managerDetalheBem.bemSelecionado)}"  style="width: 100%; height: 100%;"/>
+                </p:panel>
+
+
+            </p:dashboard>
+        </h:form>
+
+
+
+    </h:body>
+
+</html>

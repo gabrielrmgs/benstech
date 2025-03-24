@@ -67,16 +67,12 @@ public class TipoProduto implements Serializable {
         return tipo;
     }
 
-    public String valorDropdown() {
-        return tipo;
-    }
-
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 19 * hash + Objects.hashCode(this.id);
-        hash = 19 * hash + Objects.hashCode(this.tipo);
-        hash = 19 * hash + (this.ativo ? 1 : 0);
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.id);
+        hash = 53 * hash + Objects.hashCode(this.tipo);
+        hash = 53 * hash + (this.ativo ? 1 : 0);
         return hash;
     }
 

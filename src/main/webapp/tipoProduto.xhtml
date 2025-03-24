@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Bens Tech</title>
+    </h:head>
+    <h:body>
+
+        <p:megaMenu orientation="horizontal" autoDisplay="false" style="margin-bottom: 18px">
+            <f:facet name="start">
+                <p:graphicImage value="assets/logoBranca.png" width="210" height="54"/>
+            </f:facet>
+            <p:submenu label="Inventário" icon="pi pi-fw pi-list" style="margin-top: 9px">
+                <p:column>
+                    <p:submenu label="Bem">
+                        <p:menuitem value="Cadastrar" url="index.xhtml"/>
+                    </p:submenu>
+                    <p:submenu label="Tipo produto">
+                        <p:menuitem value="Cadastrar" url="#"/>
+                    </p:submenu>
+                </p:column>
+            </p:submenu>
+
+            <p:submenu label="Relatórios" icon="pi pi-fw pi-chart-line">
+
+                <p:column>
+                    <p:submenu label="Relatórios">
+                        <p:menuitem value="Relatório de Manutenção" url="relatorioManutencao.xhtml"/>
+                        <p:menuitem value="Relatório Valor x Depreciação" url="relatorioValorDepreciacao.xhtml"/>
+                    </p:submenu>
+                </p:column>
+
+            </p:submenu>
+            <p:submenu label="Configurações" icon="pi pi-fw pi-cog">
+
+                <p:column>
+                    <p:submenu label="User 1">
+                        <p:menuitem value="User 1.1"/>
+                        <p:menuitem value="User 1.2"/>
+                    </p:submenu>
+                    <p:submenu label="User 2">
+                        <p:menuitem value="User 2.1"/>
+                        <p:menuitem value="User 2.2"/>
+                    </p:submenu>
+                </p:column>
+
+            </p:submenu>
+
+        </p:megaMenu>
+<!--        <div style="display: flex;align-items: center; justify-content: center ">
+            <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="margin-left: 24px;" />
+        </div>-->
+
+        <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
+            <p:card title="Tipos cadastrados" style="width: 990px; display: flex; flex-direction: column"> 
+                <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="position: absolute;
+                                 margin-left: 780px; margin-top: -24px; float: right" />
+
+                <p:dataTable id="tiposDataTable" var="tipoDt" value="#{managerTipoProduto.tipos}"  >
+                    <p:column headerText="Id">
+                        <h:outputText value="#{tipoDt.id}" />
+                    </p:column>
+                    <p:column headerText="Tipo">
+                        <h:outputText value="#{tipoDt.tipo}" />
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <p:commandButton icon="pi pi-pencil" actionListener="#{managerTipoProduto.setTipoSelecionado(tipoDt)}"
+                                         update="formEditarTipoProduto" onclick="PF('dlgEditarTipo').show()" process="@this" style="margin-right: 12px"/>
+
+                        <p:commandButton icon="pi pi-trash" actionListener="#{managerTipoProduto.inativarTipo(tipoDt)}" onclick="#{managerGrafico.init()}" 
+                                         update="tiposDataTable, graficoBensTipo" process="@this"/>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+            <p:chart id="graficoBensTipo" style="width: 360px; height: 360px;  margin-left: 51px;" value="#{managerGrafico.pieModel}"/>
+        </div>
+
+        <!--        <div style="width: 360px; height: 360px; margin-top: 39px; margin-left: 51px;">
+                    <p:chart id="graficoPizza" value="#{managerGrafico.pieModel}"/>
+                </div>-->
+
+
+        <p:dialog header="Adicionar Tipo" widgetVar="dlgAdicionarTipo" minHeight="40" width="350" showEffect="fade" focus="btnYes2" closeOnEscape="true" closable="false">
+
+            <h:form id="formTipoProduto" >
+
+
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
+
+                    <p:outputLabel value="Nome"/>
+                    <p:inputText required="true" value="#{managerTipoProduto.tipoProduto.tipo}"/>
+
+                </div>
+
+
+                <p:commandButton value="Cancelar" onclick="PF('dlgAdicionarTipo').hide()">
+                    <p:ajax update="formTipoProduto" resetValues="true"/>
+                </p:commandButton>
+
+                <p:defaultCommand target="botaoSalvarTipo"/>
+
+                <p:commandButton id="botaoSalvarTipo" value="Salvar" actionListener="#{managerTipoProduto.salvarTipo()}" 
+                                 update="formTipoProduto, tiposDataTable, graficoBensTipo" style="float: right" onclick="#{managerGrafico.init()}">
+                </p:commandButton>
+
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog header="Editar Tipo" widgetVar="dlgEditarTipo" minHeight="40" width="350" showEffect="fade" focus="btnYes2" closeOnEscape="true">
+
+            <h:form id="formEditarTipoProduto" >
+
+
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
+
+                    <p:outputLabel value="Nome"/>
+                    <p:inputText required="true" value="#{managerTipoProduto.tipoSelecionado.tipo}"/>
+
+                </div>
+
+
+                <p:commandButton value="Cancelar" onclick="PF('dlgEditarTipo').hide()">
+                    <p:ajax update="formEditarTipoProduto" resetValues="true"/>
+                </p:commandButton>
+
+                <p:defaultCommand target="botaoEditarTipo"/>
+
+                <p:commandButton id="botaoEditarTipo" value="Atualizar" actionListener="#{managerTipoProduto.atualizarTipo()}" 
+                                 update="formEditarTipoProduto, tiposDataTable, graficoBensTipo" style="float: right" onclick="#{managerGrafico.init()}">
+                </p:commandButton>
+
+            </h:form>
+
+        </p:dialog>
+
+
+    </h:body>
+</html>

@@ -46,8 +46,8 @@ public class Bem implements Serializable {
         return (this.precoCompra - this.valorResidual) / this.vidaUtil;
     }
 
-    public boolean bemParaManutenção() {
-        return (LocalDate.now().getYear() - this.dataCompra.getYear()) >= (this.vidaUtil * 0.75);
+    public String bemParaManutenção() {
+        return (LocalDate.now().getYear() - this.dataCompra.getYear()) >= (this.vidaUtil * 0.75) ? "Sim" : "Não";
     }
 
     public String calcularTotalDepreciacaoAtual() {
@@ -144,15 +144,15 @@ public class Bem implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.id);
-        hash = 59 * hash + Objects.hashCode(this.nomeProduto);
-        hash = 59 * hash + Objects.hashCode(this.tipoProduto);
-        hash = 59 * hash + (int) (Double.doubleToLongBits(this.precoCompra) ^ (Double.doubleToLongBits(this.precoCompra) >>> 32));
-        hash = 59 * hash + Objects.hashCode(this.dataCompra);
-        hash = 59 * hash + this.vidaUtil;
-        hash = 59 * hash + (int) (Double.doubleToLongBits(this.valorResidual) ^ (Double.doubleToLongBits(this.valorResidual) >>> 32));
-        hash = 59 * hash + (this.ativo ? 1 : 0);
+        int hash = 5;
+        hash = 29 * hash + Objects.hashCode(this.id);
+        hash = 29 * hash + Objects.hashCode(this.nomeProduto);
+        hash = 29 * hash + Objects.hashCode(this.tipoProduto);
+        hash = 29 * hash + (int) (Double.doubleToLongBits(this.precoCompra) ^ (Double.doubleToLongBits(this.precoCompra) >>> 32));
+        hash = 29 * hash + Objects.hashCode(this.dataCompra);
+        hash = 29 * hash + this.vidaUtil;
+        hash = 29 * hash + (int) (Double.doubleToLongBits(this.valorResidual) ^ (Double.doubleToLongBits(this.valorResidual) >>> 32));
+        hash = 29 * hash + (this.ativo ? 1 : 0);
         return hash;
     }
 

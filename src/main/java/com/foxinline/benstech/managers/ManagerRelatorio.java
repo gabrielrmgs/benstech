@@ -33,7 +33,7 @@ public class ManagerRelatorio implements Serializable {
         this.bensManutencao = new ArrayList<>();
         List<Bem> bensTotal = serviceBem.findAll();
         for (Bem bem : bensTotal) {
-            if(bem.bemParaManutenção()){
+            if(bem.bemParaManutenção().equals("Sim")){
                 bensManutencao.add(bem);
             }
         }

@@ -25,6 +25,7 @@ public class ManagerTipoProduto implements Serializable {
     @PostConstruct
     public void init() {
         this.tipoProduto = new TipoProduto();
+        this.tipoSelecionado = new TipoProduto();
         this.tipos = new ArrayList<>();
         this.tipos = serviceTipoProduto.findAll();
     }
@@ -79,6 +80,8 @@ public class ManagerTipoProduto implements Serializable {
 
     public void setTipoSelecionado(TipoProduto tipoSelecionado) {
         this.tipoSelecionado = tipoSelecionado;
+        System.out.println(this.tipoSelecionado);
+        System.out.println(tipoSelecionado);
     }
 
 }
