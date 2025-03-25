@@ -24,7 +24,7 @@ public class ServiceManutencao extends ServiceGeneric<Manutencao> {
 //        Query query = getEntityManager().createQuery("SELECT m FROM Manutencao m WHERE m.BemId = :idBem");
 //        query.setParameter("idBem", id);
 //        return query.getResultList();
-        return getEntityManager().createQuery("SELECT m FROM Manutencao m WHERE m.ativo = true AND m.bem.id = " + id).getResultList();
+        return getEntityManager().createQuery("SELECT m FROM Manutencao m WHERE m.ativo = true AND m.bem.id = " + id+" ORDER BY m.dataManutencao DESC").getResultList();
     }
 
 }
