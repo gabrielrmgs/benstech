@@ -80,21 +80,21 @@
                     </p:column>
 
                     <p:column headerText="Ações">
-                        <p:commandButton icon="pi pi-search" style="margin-right: 9px" action="#{managerDetalheBem.encaminharDetalhes(bemDt)}"/>
+                        <p:commandButton icon="pi pi-search" style="margin-right: 9px"
+                                         actionListener="#{managerManutencao.setBemSelecionado(bemDt)}" action="#{managerDetalheBem.encaminharDetalhes(bemDt)}"
+                                         process="@this"/>
 
                         <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerBem.setBemSelecionado(bemDt)}"
                                          update="formEditarBem" onclick="PF('dlgEditarBem').show()" process="@this"/>
 
                         <p:commandButton icon="pi pi-trash" actionListener="#{managerBem.inativarBem(bemDt)}" 
-                                         onclick="#{managerGrafico.init()}" update="bensDataTable, graficoPizza" process="@this"/>
+                                         onclick="#{managerGrafico.init()}" update="bensDataTable" process="@this"/>
                     </p:column>
                 </p:dataTable>
             </p:card>
         </div>
 
-        <!--        <div style="width: 360px; height: 360px; margin-top: 39px; margin-left: 51px; display: none">
-                    <p:chart id="graficoPizza" value="#{managerGrafico.pieModel}"/>
-                </div>-->
+      
 
         <p:dialog header="Adicionar bem" widgetVar="dlgAdicionarBem" minHeight="40" width="350" showEffect="fade" focus="btnYes" closeOnEscape="true">
             <h:form id="formAdicionarBem" >
@@ -156,7 +156,7 @@
                     <p:inputText value="#{managerBem.bemSelecionado.nomeProduto}"/>
 
                     <p:outputLabel for="@next" value="Tipo do bem"/>
-                    <p:selectOneMenu id="option" value="#{managerBem.idTipoSelecionado}">
+                    <p:selectOneMenu id="option2" value="#{managerBem.idTipoSelecionado}">
                         <f:selectItem itemLabel="Selecione um tipo" itemValue="" noSelectionOption="true" />
                         <f:selectItems value="#{managerTipoProduto.tipos}" var="tipo" itemLabel="#{tipo.tipo}" itemValue="#{tipo.id}"/>
                     </p:selectOneMenu>
@@ -165,15 +165,15 @@
                     <p:inputNumber value="#{managerBem.bemSelecionado.precoCompra}" symbol="R$"
                                    decimalSeparator="," thousandSeparator="."/>
 
-                    <p:outputLabel for="basic" value="Data de compra" />
-                    <p:datePicker id="basic" value="#{managerBem.bemSelecionado.dataCompra}" pattern="dd/MM/yyyy"/>
+                    <p:outputLabel for="basic2" value="Data de compra" />
+                    <p:datePicker id="basic2" value="#{managerBem.bemSelecionado.dataCompra}" pattern="dd/MM/yyyy"/>
 
                     <p:outputLabel value="Vida útil estimada"/>
                     <p:inputNumber value="#{managerBem.bemSelecionado.vidaUtil}"/>
 
                     <p:outputLabel value="Valor residual">
-                        <p:commandButton type="button" id="animate" style="background: none; color: red; border: none; width: 12px; height: 12px; margin-left: 12px; position: absolute; margin-top: 3px" icon="pi pi-info-circle"/>
-                        <p:tooltip for="animate" value="O valor residual é o valor que o ativo terá no final de sua vida útil, e é uma estimativa." showEffect="clip" hideEffect="fold" />
+                        <p:commandButton type="button" id="animate2" style="background: none; color: red; border: none; width: 12px; height: 12px; margin-left: 12px; position: absolute; margin-top: 3px" icon="pi pi-info-circle"/>
+                        <p:tooltip for="animate2" value="O valor residual é o valor que o ativo terá no final de sua vida útil, e é uma estimativa." showEffect="clip" hideEffect="fold" />
                     </p:outputLabel>
                     <p:inputNumber value="#{managerBem.bemSelecionado.valorResidual}" symbol="R$"
                                    decimalSeparator="," thousandSeparator="."/>
@@ -198,29 +198,29 @@
     </h:body>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script>
-                                             function chartExtender() {
-                                                 var options = {
-                                                     plugins: [ChartDataLabels],
-                                                     options: {
-                                                         plugins: {
-                                                             // Change options for ALL labels of THIS CHART
-                                                             datalabels: {
-                                                                 color: 'HotPink'
-                                                             }
-                                                         }
-                                                     },
-                                                     data: {
-                                                         datasets: [{
-                                                                 // Change options only for labels of THIS DATASET
-                                                                 datalabels: {
-                                                                     color: 'Indigo'
-                                                                 }
-                                                             }]
-                                                     }
-                                                 };
+                function chartExtender() {
+                    var options = {
+                        plugins: [ChartDataLabels],
+                        options: {
+                            plugins: {
+                                // Change options for ALL labels of THIS CHART
+                                datalabels: {
+                                    color: 'HotPink'
+                                }
+                            }
+                        },
+                        data: {
+                            datasets: [{
+                                    // Change options only for labels of THIS DATASET
+                                    datalabels: {
+                                        color: 'Indigo'
+                                    }
+                                }]
+                        }
+                    };
 
-                                                 //merge all options into the main chart options
-                                                 $.extend(true, this.cfg.config, options);
-                                             }
+                    //merge all options into the main chart options
+                    $.extend(true, this.cfg.config, options);
+                }
     </script>
 </html>

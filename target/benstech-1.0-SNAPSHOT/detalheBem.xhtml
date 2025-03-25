@@ -73,31 +73,48 @@
 
         </p:megaMenu>
 
-        <div class="card">
+        <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
+            <h:form>
+                <p:card style="width: 990px;" title="Detalhes #{managerDetalheBem.bemSelecionado.nomeProduto}" >
+                    <p:panelGrid columns="3" layout="grid" styleClass="showcase-text-align-center">
+                        <h:outputText value="Data da compra: #{managerDetalheBem.bemSelecionado.dataCompra}"/>
+                        <h:outputText value="Tipo: #{managerDetalheBem.bemSelecionado.tipoProduto}"/>
+                        <h:outputText value="Preço da compra: #{managerDetalheBem.bemSelecionado.precoCompra}"/>
 
-            <h:form id="form">
+                        <h:outputText value="Vida útil: #{managerDetalheBem.bemSelecionado.vidaUtil} anos"/>
+                        <h:outputText value="Depreciação Anual do bem: #{managerDetalheBem.bemSelecionado.calcularDepreciacaoAnual()}"/>
+                        <h:outputText value="Total depreciado atualmente: #{managerDetalheBem.bemSelecionado.calcularTotalDepreciacaoAtual()}"/>
 
-                <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
-                    <p:card style="width: 990px;" title="Detalhes #{managerDetalheBem.bemSelecionado.nomeProduto}" >
-                        <p:panelGrid columns="3" layout="grid" styleClass="showcase-text-align-center">
-                            <h:outputText value="Data da compra: #{managerDetalheBem.bemSelecionado.dataCompra}"/>
-                            <h:outputText value="Tipo: #{managerDetalheBem.bemSelecionado.tipoProduto}"/>
-                            <h:outputText value="Preço da compra: #{managerDetalheBem.bemSelecionado.precoCompra}"/>
+                        <h:outputText value="Valor atual do bem: #{managerDetalheBem.bemSelecionado.calcularValorAtualDoBem()}"/>
+                        <h:outputText value="Valor residual: #{managerDetalheBem.bemSelecionado.valorResidual}"/>
+                        <h:outputText value="Manutenção recomendada: #{managerDetalheBem.manutencaoPreventiva()}"/>
+                    </p:panelGrid> 
 
-                            <h:outputText value="Vida útil: #{managerDetalheBem.bemSelecionado.vidaUtil} anos"/>
-                            <h:outputText value="Depreciação Anual do bem: #{managerDetalheBem.bemSelecionado.calcularDepreciacaoAnual()}"/>
-                            <h:outputText value="Total depreciado atualmente: #{managerDetalheBem.bemSelecionado.calcularTotalDepreciacaoAtual()}"/>
+                </p:card>
+            </h:form>
+            <h:form>
+                <p:card style="width: 480px; margin-left: 24px" title="Manutenções" >
+                    <p:commandButton onclick="PF('dlgCadastrarManutencao').show()" style="position: absolute; margin-top: -54px; margin-left: 315px" icon="pi pi-plus" iconPos="right" value="Cadastrar" />
+                    <p:dataTable id="manutencaoDataTable" value="#{managerManutencao.manutencoesDoBem}" var="manutencao" rows="2" paginatorAlwaysVisible="false" paginator="true"
+                                 paginatorPosition="bottom" paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                                 >
+                        <p:column headerText="Custo da manutenção">
+                            <h:outputText value="#{manutencao.custoManutencao}"/>
+                        </p:column>
+                        <p:column headerText="Data da manutenção">
+                            <h:outputText value="#{manutencao.dataManutencao}"/>
+                        </p:column>
+                        <p:column headerText="Ações">
+                            <p:commandButton icon="pi pi-pencil" onclick="PF('')"/>
+                            <p:commandButton style="margin-left: 12px" icon="pi pi-trash" actionListener="#{managerManutencao.inativarManutencao(manutencao)}" />
+                        </p:column>
+                    </p:dataTable>
 
-                            <h:outputText value="Valor atual do bem: #{managerDetalheBem.bemSelecionado.calcularValorAtualDoBem()}"/>
-                            <h:outputText value="Valor residual: #{managerDetalheBem.bemSelecionado.valorResidual}"/>
-                            <h:outputText  id="manutencao" value="Manutenção recomendada: #{managerDetalheBem.bemSelecionado.bemParaManutenção()}"/>
-                        </p:panelGrid> 
 
-                    </p:card>
-                </div>
-
+                </p:card>
             </h:form>
         </div>
+
         <h:form id="dashboard" style="display: flex; align-items: center; justify-content: center; margin-top: 24px">
 
             <p:dashboard id="responsive" model="#{dashboardView.responsiveModel}" responsive="true" style="display: flex; flex-direction: row;
@@ -120,7 +137,65 @@
             </p:dashboard>
         </h:form>
 
+        <p:dialog header="Cadastrar Manutenção" widgetVar="dlgCadastrarManutencao" minHeight="40" width="350" showEffect="fade" focus="btnYes2" closeOnEscape="true">
 
+            <h:form id="formCadastroManutencao" >
+
+
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
+
+                    <p:outputLabel value="Custas"/>
+                    <p:inputNumber required="true" value="#{managerManutencao.manutencao.custoManutencao}" />
+
+                    <p:outputLabel for="basic5" value="Data da Manutenção" />
+                    <p:datePicker id="basic5" value="#{managerManutencao.manutencao.dataManutencao}" pattern="dd/MM/yyyy"/>
+
+                </div>
+
+
+                <p:commandButton value="Cancelar" onclick="PF('dlgCadastrarManutencao').hide()">
+                    <p:ajax update="formCadastroManutencao" resetValues="true"/>
+                </p:commandButton>
+
+                <p:defaultCommand target="botaoCadastrarManutencao"/>
+
+                <p:commandButton id="botaoCadastrarManutencao" value="Cadastrar" style="float: right" actionListener="#{managerManutencao.cadastrarManutencao()}"
+                                 onclick="PF('dlgCadastrarManutencao').hide()" update="@form, manutencaoDataTable">
+                </p:commandButton>
+
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog header="Editar Manutenção" widgetVar="dlgEditarManutencao" minHeight="40" width="350" showEffect="fade" focus="btnYes2" closeOnEscape="true">
+
+            <h:form id="formEditarManutencao" >
+
+
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
+
+                    <p:outputLabel value="Custas"/>
+                    <p:inputNumber required="true" value="#{managerManutencao.manutencao.custoManutencao}" />
+
+                    <p:outputLabel for="basic2" value="Data da Manutenção" />
+                    <p:datePicker id="basic2" value="#{managerManutencao.manutencao.dataManutencao}" pattern="dd/MM/yyyy"/>
+
+                </div>
+
+
+                <p:commandButton value="Cancelar" onclick="PF('dlgEditarManutencao').hide()">
+                    <p:ajax update="formEditarManutencao" resetValues="true"/>
+                </p:commandButton>
+
+                <p:defaultCommand target="botaoEditarManutencao"/>
+
+                <p:commandButton id="botaoEditarManutencao" value="Editar" style="float: right" 
+                                 onclick="PF('dlgEditarManutencao').hide()" >
+                </p:commandButton>
+
+            </h:form>
+
+        </p:dialog>
 
     </h:body>
 

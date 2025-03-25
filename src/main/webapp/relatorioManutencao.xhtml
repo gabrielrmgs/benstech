@@ -58,8 +58,14 @@
                 <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
                     <p:card style="width: 990px;" title="Relatório de Bens para manutenção" >
 
+                        <p:selectOneMenu id="option" value="#{managerRelatorio.idTipoSelecionado}" >
+                            <f:selectItem itemLabel="Selecione um tipo" itemValue="" noSelectionOption="true" />
+                            <f:selectItems value="#{managerRelatorio.tipos}" var="tipo" itemLabel="#{tipo.tipo}" itemValue="#{tipo.id}"/>
+                        </p:selectOneMenu>
 
-                        <p:dataTable id="manutencaoDataTable" var="manutencaoDt" value="#{managerRelatorio.bensManutencao}"  >
+                        <p:commandButton actionListener="#{managerRelatorio.filtrarPorTipo()}" value="Filtrar" style="margin-left: 12px" update="@form, manutencaoDataTable"/>
+
+                        <p:dataTable id="manutencaoDataTable" var="manutencaoDt" value="#{managerRelatorio.bensManutencaoFiltro}"  >
                             <p:column headerText="Nome do produto">
                                 <h:outputText value="#{manutencaoDt.nomeProduto}" />
                             </p:column>
@@ -90,6 +96,7 @@
                     <p:commandButton value="Baixar PDF" styleClass="mr-2 mb-2" icon="pi pi-file-pdf">
                         <p:dataExporter type="pdf" target="manutencaoDataTable" fileName="produtosParaManutencao"/>
                     </p:commandButton>
+                    <p:commandButton actionListener="#{managerPDF.gerarPDFManutencao()}" value="PDF itext"/>
                 </div>
             </h:form>
         </div>

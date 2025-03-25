@@ -4,10 +4,15 @@
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/ManagerDetalheBem.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/resources/JakartaEE10Resource.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/ManagerBem.java
+/home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/ManagerManutencao.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/ManagerGrafico.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/services/ServiceTipoProduto.java
+/home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/ManagerPDF.java
+/home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/services/ServiceManutencao.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/services/ServiceBem.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/models/Bem.java
+/home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/models/Manutencao.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/models/TipoProduto.java
+/home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/utilities/Mensagem.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/JakartaRestConfiguration.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/services/ServiceGeneric.java

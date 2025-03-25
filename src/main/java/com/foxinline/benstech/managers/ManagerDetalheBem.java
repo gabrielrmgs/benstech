@@ -1,16 +1,17 @@
 package com.foxinline.benstech.managers;
 
 import com.foxinline.benstech.models.Bem;
+import com.foxinline.benstech.models.Manutencao;
 import com.foxinline.benstech.models.TipoProduto;
 import com.foxinline.benstech.services.ServiceBem;
+import com.foxinline.benstech.services.ServiceManutencao;
 import com.foxinline.benstech.services.ServiceTipoProduto;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +25,14 @@ public class ManagerDetalheBem implements Serializable {
     @EJB
     private ServiceTipoProduto serviceTipoProduto;
 
+    @EJB
+    private ServiceManutencao serviceManutencao;
+
     private Bem bem;
     private List<Bem> bens;
     private String idTipoSelecionado;
     private TipoProduto tipoSelecionado;
     private Bem bemSelecionado;
-
 
     @PostConstruct
     public void init() {
@@ -64,12 +67,35 @@ public class ManagerDetalheBem implements Serializable {
         bem.setAtivo(false);
         serviceBem.atualizar(bem);
         this.bens = serviceBem.findAll();
-
     }
 
     public String encaminharDetalhes(Bem bem) {
         this.bemSelecionado = bem;
         return "detalheBem?faces-redirect=true";
+    }
+
+    public String manutencaoPreventiva() {
+
+        List<Manutencao> manutencoes = new ArrayList<>();
+        manutencoes = serviceManutencao.buscarManutencaoBemId(bemSelecionado.getId());
+
+        int mesesBem = 0;
+        mesesBem += (LocalDate.now().getYear() - bemSelecionado.getDataCompra().getYear()) * 12;
+        mesesBem += (LocalDate.now().getMonthValue() - bemSelecionado.getDataCompra().getMonthValue());
+
+        if (manutencoes.isEmpty() && mesesBem >= 12) {
+            return "Sim";
+        }
+        for (Manutencao m : manutencoes) {
+            int meses = 0;
+            meses += (LocalDate.now().getYear() - m.getDataManutencao().getYear()) * 12;
+            meses += (LocalDate.now().getMonthValue() - m.getDataManutencao().getMonthValue());
+            if (meses <= 12) {
+                return "Não";
+            }
+        }
+        return "Sim";
+
     }
 
     public ServiceBem getServiceBem() {
@@ -111,8 +137,6 @@ public class ManagerDetalheBem implements Serializable {
     public Bem getBemSelecionado() {
         return bemSelecionado;
     }
-
-    
 
     public void setBemSelecionado(Bem bemSelecionado) {
         this.idTipoSelecionado = String.valueOf(bemSelecionado.getTipoProduto().getId());
