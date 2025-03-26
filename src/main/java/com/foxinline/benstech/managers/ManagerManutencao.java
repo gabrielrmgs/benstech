@@ -9,6 +9,7 @@ import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +76,10 @@ public class ManagerManutencao implements Serializable {
         this.manutencoesDoBem = this.serviceManutencao.buscarManutencaoBemId(this.bemSelecionado.getId());
         System.out.println(manutencoesDoBem);
 
+    }
+    
+    public void setDataAtual() {
+        manutencao.setDataManutencao(LocalDate.now());
     }
 
     public Manutencao getManutencao() {

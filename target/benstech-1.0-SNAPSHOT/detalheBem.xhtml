@@ -94,7 +94,7 @@
             </h:form>
             <h:form>
                 <p:card style="width: 480px; margin-left: 24px" title="Manutenções" >
-                    <p:commandButton onclick="PF('dlgCadastrarManutencao').show()" style="position: absolute; margin-top: -54px; margin-left: 315px" icon="pi pi-plus" iconPos="right" value="Cadastrar" />
+                    <p:commandButton onclick="PF('dlgCadastrarManutencao').show()" action="#{managerManutencao.setDataAtual()}" style="position: absolute; margin-top: -54px; margin-left: 315px" icon="pi pi-plus" iconPos="right" value="Cadastrar" />
                     <p:dataTable sortBy="#{manutencao.dataManutencao}" sortMode="single" id="manutencaoDataTable" value="#{managerManutencao.manutencoesDoBem}" var="manutencao" rows="2" paginatorAlwaysVisible="false" paginator="true"
                                  paginatorPosition="bottom" paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
                                  >
@@ -149,7 +149,7 @@
                                    decimalSeparator="," thousandSeparator="."/>
 
                     <p:outputLabel for="basic5" value="Data da Manutenção" />
-                    <p:datePicker id="basic5" value="#{managerManutencao.manutencao.dataManutencao}" pattern="dd/MM/yyyy"/>
+                    <p:datePicker id="basic5" required="true" value="#{managerManutencao.manutencao.dataManutencao}" pattern="dd/MM/yyyy"/>
 
                 </div>
 
