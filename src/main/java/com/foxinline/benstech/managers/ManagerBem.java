@@ -4,6 +4,7 @@ import com.foxinline.benstech.models.Bem;
 import com.foxinline.benstech.models.TipoProduto;
 import com.foxinline.benstech.services.ServiceBem;
 import com.foxinline.benstech.services.ServiceTipoProduto;
+import com.foxinline.benstech.utilities.Formatador;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.faces.view.ViewScoped;
@@ -27,7 +28,6 @@ public class ManagerBem implements Serializable {
     private String idTipoSelecionado;
     private TipoProduto tipoSelecionado;
     private Bem bemSelecionado;
-
 
     @PostConstruct
     public void init() {
@@ -110,11 +110,11 @@ public class ManagerBem implements Serializable {
         return bemSelecionado;
     }
 
-    
-
     public void setBemSelecionado(Bem bemSelecionado) {
         this.idTipoSelecionado = String.valueOf(bemSelecionado.getTipoProduto().getId());
         this.bemSelecionado = bemSelecionado;
     }
+
+    
 
 }

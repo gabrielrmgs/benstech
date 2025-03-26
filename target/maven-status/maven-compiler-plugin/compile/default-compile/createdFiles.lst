@@ -1,10 +1,10 @@
-com/foxinline/benstech/managers/ManagerPDF.class
 com/foxinline/benstech/services/ServiceBem.class
 com/foxinline/benstech/services/ServiceManutencao.class
 com/foxinline/benstech/managers/ManagerGrafico.class
 com/foxinline/benstech/services/ServiceGeneric.class
 com/foxinline/benstech/models/Manutencao.class
 com/foxinline/benstech/managers/ManagerTipoProduto.class
+com/foxinline/benstech/utilities/Formatador.class
 com/foxinline/benstech/resources/JakartaEE10Resource.class
 com/foxinline/benstech/managers/ManagerBem.class
 com/foxinline/benstech/models/Bem.class

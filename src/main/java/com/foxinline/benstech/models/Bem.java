@@ -8,6 +8,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Entity
@@ -50,17 +51,17 @@ public class Bem implements Serializable {
         return (LocalDate.now().getYear() - this.dataCompra.getYear()) >= (this.vidaUtil * 0.75) ? "Sim" : "Não";
     }
 
-    public String calcularTotalDepreciacaoAtual() {
+    public double calcularTotalDepreciacaoAtual() {
 //        return (LocalDate.now().getYear() - this.dataCompra.getYear()) * this.calcularDepreciacaoAnual();
         int meses = 0;
         meses += (LocalDate.now().getYear() - this.dataCompra.getYear()) * 12;
         meses += (LocalDate.now().getMonthValue() - this.dataCompra.getMonthValue());
 
-        double calculoFinal = calcularDepreciacaoMensal() * meses;
-        String valorFormatado = String.format("%.2f", calculoFinal);
-        System.out.println(valorFormatado);
+        // double calculoFinal = calcularDepreciacaoMensal() * meses;
+//        String valorFormatado = String.format("%.2f", calculoFinal);
+//        System.out.println(valorFormatado);
+        return calcularDepreciacaoMensal() * meses;
 
-        return valorFormatado;
     }
 
     public double calcularDepreciacaoPorAno(int ano) {
@@ -71,11 +72,15 @@ public class Bem implements Serializable {
     }
 
     public double calcularValorAtualDoBem() {
-        return this.precoCompra - Double.parseDouble(calcularTotalDepreciacaoAtual().replace(",", "."));
+        return this.precoCompra - calcularTotalDepreciacaoAtual();
     }
 
     public double calcularDepreciacaoMensal() {
         return this.calcularDepreciacaoAnual() / 12;
+    }
+
+    public String getDataFormatada() {
+        return dataCompra.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
     public Long getId() {

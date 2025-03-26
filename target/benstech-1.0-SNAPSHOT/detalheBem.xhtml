@@ -77,16 +77,16 @@
             <h:form>
                 <p:card style="width: 990px;" title="Detalhes #{managerDetalheBem.bemSelecionado.nomeProduto}" >
                     <p:panelGrid columns="3" layout="grid" styleClass="showcase-text-align-center">
-                        <h:outputText value="Data da compra: #{managerDetalheBem.bemSelecionado.dataCompra.dayOfMonth}/#{managerDetalheBem.bemSelecionado.dataCompra.monthValue}/#{managerDetalheBem.bemSelecionado.dataCompra.year}"/>
+                        <h:outputText value="Data da compra: #{managerDetalheBem.bemSelecionado.dataFormatada}"/>
                         <h:outputText value="Tipo: #{managerDetalheBem.bemSelecionado.tipoProduto}"/>
-                        <h:outputText value="Preço da compra: #{managerDetalheBem.bemSelecionado.precoCompra}"/>
+                        <h:outputText value="Preço da compra: #{managerDetalheBem.formatadorMonetarioPrecoCompra()}"/>
 
                         <h:outputText value="Vida útil: #{managerDetalheBem.bemSelecionado.vidaUtil} anos"/>
-                        <h:outputText value="Depreciação Anual do bem: #{managerDetalheBem.bemSelecionado.calcularDepreciacaoAnual()}"/>
-                        <h:outputText value="Total depreciado atualmente: #{managerDetalheBem.bemSelecionado.calcularTotalDepreciacaoAtual()}"/>
+                        <h:outputText value="Depreciação Anual do bem: #{managerDetalheBem.formatadorMonetarioDepreciacaoAnual()}"/>
+                        <h:outputText value="Total depreciado atualmente: #{managerDetalheBem.formatadorMonetarioTotalDepreciado()}"/>
 
-                        <h:outputText value="Valor atual do bem: #{managerDetalheBem.bemSelecionado.calcularValorAtualDoBem()}"/>
-                        <h:outputText value="Valor residual: #{managerDetalheBem.bemSelecionado.valorResidual}"/>
+                        <h:outputText value="Valor atual do bem: #{managerDetalheBem.formatadorMonetarioValorAtualDoBem()}"/>
+                        <h:outputText value="Valor residual: #{managerDetalheBem.formatadorMonetarioResidual()}"/>
                         <h:outputText value="Manutenção recomendada: #{managerDetalheBem.manutencaoPreventiva()}"/>
                     </p:panelGrid> 
 
@@ -102,7 +102,7 @@
                             <h:outputText value="#{manutencao.custoManutencao}"/>
                         </p:column>
                         <p:column headerText="Data da manutenção">
-                            <h:outputText value="#{manutencao.dataManutencao.dayOfMonth}/#{manutencao.dataManutencao.monthValue}/#{manutencao.dataManutencao.year}"/>
+                            <h:outputText value="#{manutencao.dataManutencaoFormatada}"/>
                         </p:column>
                         <p:column headerText="Ações">
                             <p:commandButton icon="pi pi-pencil" onclick="PF('')"/>

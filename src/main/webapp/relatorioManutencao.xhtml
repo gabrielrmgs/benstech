@@ -73,19 +73,19 @@
                                 <h:outputText value="#{manutencaoDt.tipoProduto}" />
                             </p:column>
                             <p:column headerText="Data da compra">
-                                <h:outputText value="#{manutencaoDt.dataCompra}" />
+                                <h:outputText value="#{manutencaoDt.dataFormatada}" />
                             </p:column>
                             <p:column headerText="Preço da compra">
-                                <h:outputText value="#{manutencaoDt.precoCompra}" />
+                                <h:outputText value="#{formatador.formatadorMoeda.format(manutencaoDt.precoCompra)}" />
                             </p:column>
                             <p:column headerText="Valor residual">
-                                <h:outputText value="#{manutencaoDt.valorResidual}" />
+                                <h:outputText value="#{formatador.formatadorMoeda.format(manutencaoDt.valorResidual)}" />
                             </p:column>
                             <p:column headerText="Depreciação Total">
-                                <h:outputText value="#{manutencaoDt.calcularTotalDepreciacaoAtual()}" />
+                                <h:outputText value="#{formatador.formatadorMoeda.format(manutencaoDt.calcularTotalDepreciacaoAtual())}" />
                             </p:column>
                             <p:column headerText="Valor atual do bem">
-                                <h:outputText value="#{manutencaoDt.calcularValorAtualDoBem()}" />
+                                <h:outputText value="#{formatador.formatadorMoeda.format(manutencaoDt.calcularValorAtualDoBem())}" />
                             </p:column>
 
 
@@ -93,10 +93,7 @@
                     </p:card>
                 </div>
                 <div style="display: flex;align-items: center; justify-content: center ; margin-top: 18px">
-                    <p:commandButton value="Baixar PDF" styleClass="mr-2 mb-2" icon="pi pi-file-pdf">
-                        <p:dataExporter type="pdf" target="manutencaoDataTable" fileName="produtosParaManutencao"/>
-                    </p:commandButton>
-                    <p:commandButton actionListener="#{managerPDF.gerarPDFManutencao()}" value="PDF itext"/>
+                    <p:commandButton value="Baixar PDF" styleClass="mr-2 mb-2" icon="pi pi-file-pdf" actionListener="#{managerRelatorio.gerarPDFManutencao()}"/>
                 </div>
             </h:form>
         </div>

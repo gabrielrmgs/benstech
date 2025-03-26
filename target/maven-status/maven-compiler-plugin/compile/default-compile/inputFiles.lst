@@ -1,3 +1,4 @@
+/home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/utilities/Formatador.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/ManagerRelatorio.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/DashboardView.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/ManagerTipoProduto.java
@@ -7,7 +8,6 @@
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/ManagerManutencao.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/ManagerGrafico.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/services/ServiceTipoProduto.java
-/home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/managers/ManagerPDF.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/services/ServiceManutencao.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/services/ServiceBem.java
 /home/marcio/gestaodebens/benstech/src/main/java/com/foxinline/benstech/models/Bem.java

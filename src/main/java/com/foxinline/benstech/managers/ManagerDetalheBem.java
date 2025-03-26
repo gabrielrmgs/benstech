@@ -11,9 +11,12 @@ import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Named
 @SessionScoped
@@ -33,6 +36,8 @@ public class ManagerDetalheBem implements Serializable {
     private String idTipoSelecionado;
     private TipoProduto tipoSelecionado;
     private Bem bemSelecionado;
+    private static final Locale local = new Locale("pt", "br");
+    private static final NumberFormat format = NumberFormat.getCurrencyInstance(local);
 
     @PostConstruct
     public void init() {
@@ -42,6 +47,10 @@ public class ManagerDetalheBem implements Serializable {
         this.tipoSelecionado = new TipoProduto();
         this.bemSelecionado = new Bem();
 
+    }
+
+    public String bemSelecionadoDataFormatada() {
+        return this.bemSelecionado.getDataCompra().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
     public void salvarBem() {
@@ -97,6 +106,24 @@ public class ManagerDetalheBem implements Serializable {
         return "Sim";
 
     }
+
+    public String formatadorMonetarioPrecoCompra() {
+        return format.format(bemSelecionado.getPrecoCompra());
+    }
+
+    public String formatadorMonetarioResidual() {
+        return format.format(bemSelecionado.getValorResidual());
+    }
+    public String formatadorMonetarioTotalDepreciado() {
+        return format.format(bemSelecionado.calcularTotalDepreciacaoAtual());
+    }
+    public String formatadorMonetarioDepreciacaoAnual() {
+        return format.format(bemSelecionado.calcularDepreciacaoAnual());
+    }
+    public String formatadorMonetarioValorAtualDoBem() {
+        return format.format(bemSelecionado.calcularValorAtualDoBem());
+    }
+
 
     public ServiceBem getServiceBem() {
         return serviceBem;

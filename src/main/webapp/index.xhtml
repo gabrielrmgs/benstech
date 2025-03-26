@@ -69,10 +69,10 @@
                         <h:outputText value="#{bemDt.tipoProduto}" />
                     </p:column>
                     <p:column headerText="Data da compra">
-                        <h:outputText value="#{bemDt.dataCompra}" />
+                        <h:outputText value="#{bemDt.dataFormatada}" />
                     </p:column>
                     <p:column headerText="Preço da compra">
-                        <h:outputText value="#{bemDt.precoCompra}" />
+                        <h:outputText value="#{formatador.formatadorMoeda.format(bemDt.precoCompra)}" />
                     </p:column>
 
                     <p:column headerText="Vida Útil">

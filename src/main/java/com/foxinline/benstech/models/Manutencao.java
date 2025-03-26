@@ -12,6 +12,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -70,6 +71,9 @@ public class Manutencao implements Serializable {
 
     public LocalDate getDataManutencao() {
         return dataManutencao;
+    }
+    public String getDataManutencaoFormatada() {
+        return dataManutencao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
     public void setDataManutencao(LocalDate dataManutencao) {

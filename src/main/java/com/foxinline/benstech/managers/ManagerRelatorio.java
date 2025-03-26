@@ -5,17 +5,38 @@
 package com.foxinline.benstech.managers;
 
 import com.foxinline.benstech.models.Bem;
+import com.foxinline.benstech.models.Manutencao;
 import com.foxinline.benstech.models.TipoProduto;
 import com.foxinline.benstech.services.ServiceBem;
+import com.foxinline.benstech.services.ServiceManutencao;
 import com.foxinline.benstech.services.ServiceTipoProduto;
+import com.lowagie.text.Cell;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Image;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Table;
+import com.lowagie.text.pdf.PdfWriter;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  *
@@ -30,25 +51,32 @@ public class ManagerRelatorio implements Serializable {
     @EJB
     private ServiceTipoProduto serviceTipoProduto;
 
+    @EJB
+    private ServiceManutencao serviceManutencao;
+
     private List<Bem> bensManutencao;
     private List<Bem> bensManutencaoFiltro;
     private List<TipoProduto> tipos;
 
     private String idTipoSelecionado;
+    private TipoProduto tipoSelecionado;
+    private String tipoSelecionadoNome;
 
     @PostConstruct
     public void init() {
         this.bensManutencao = new ArrayList<>();
         this.bensManutencaoFiltro = new ArrayList<>();
+
         this.tipos = new ArrayList<>();
         tipos = serviceTipoProduto.findAll();
         List<Bem> bensTotal = serviceBem.findAll();
         for (Bem bem : bensTotal) {
-            if (bem.bemParaManutenção().equals("Sim")) {
+            if (manutencaoPreventiva(bem)) {
                 bensManutencao.add(bem);
             }
         }
         bensManutencaoFiltro.addAll(bensManutencao);
+        filtrarPorTipo();
     }
 
     public void filtrarPorTipo() {
@@ -56,21 +84,205 @@ public class ManagerRelatorio implements Serializable {
         if (idTipoSelecionado == "" || idTipoSelecionado == null) {
             bensManutencaoFiltro.clear();
             bensManutencaoFiltro.addAll(bensManutencao);
+            tipoSelecionadoNome = "Todos";
             return;
         }
 
         bensManutencaoFiltro.clear();
 
-        TipoProduto tipoSelecionado = new TipoProduto();
         tipoSelecionado = serviceTipoProduto.findById(Long.valueOf(idTipoSelecionado));
-        System.out.println(bensManutencao);
-        System.out.println(tipoSelecionado);
+        tipoSelecionadoNome = tipoSelecionado.getTipo();
+//        System.out.println(bensManutencao);
+//        System.out.println(tipoSelecionado);
         for (Bem bem : bensManutencao) {
             if (bem.getTipoProduto().equals(tipoSelecionado)) {
                 bensManutencaoFiltro.add(bem);
             }
         }
-        System.out.println(bensManutencaoFiltro);
+        //System.out.println(bensManutencaoFiltro);
+    }
+
+    public boolean manutencaoPreventiva(Bem bemSelecionado) {
+
+        List<Manutencao> manutencoes = new ArrayList<>();
+        manutencoes = serviceManutencao.buscarManutencaoBemId(bemSelecionado.getId());
+
+        int mesesBem = 0;
+        mesesBem += (LocalDate.now().getYear() - bemSelecionado.getDataCompra().getYear()) * 12;
+        mesesBem += (LocalDate.now().getMonthValue() - bemSelecionado.getDataCompra().getMonthValue());
+
+        if (manutencoes.isEmpty() && mesesBem >= 12) {
+            return true;
+        }
+        for (Manutencao m : manutencoes) {
+            int meses = 0;
+            meses += (LocalDate.now().getYear() - m.getDataManutencao().getYear()) * 12;
+            meses += (LocalDate.now().getMonthValue() - m.getDataManutencao().getMonthValue());
+            if (meses <= 12) {
+                return false;
+            }
+        }
+        return true;
+
+    }
+
+    public void gerarPDFManutencao() throws FileNotFoundException, DocumentException, IOException {
+        Locale local = new Locale("pt", "br");
+        NumberFormat format = NumberFormat.getCurrencyInstance(local);
+        Document document = new Document(PageSize.A4);
+        document.setMargins(40f, 40f, 55f, 40f);
+
+        try {
+
+            PdfWriter.getInstance(document, new FileOutputStream("relatorioManutencao.pdf"));
+
+            document.open();
+            Image logo = Image.getInstance("logoColorida.png");
+            logo.scaleAbsolute(120, 54);
+            logo.setAlignment(Element.ALIGN_LEFT);
+            logo.setAbsolutePosition(20, 771);
+            document.add(logo);
+
+            Paragraph titulo = new Paragraph("Relatório para manutenção de ativos", FontFactory.getFont(FontFactory.COURIER_BOLD, 15));
+            titulo.setAlignment(Element.ALIGN_CENTER);
+            Paragraph subTitulo = new Paragraph("Relatório emitido dia " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " às "
+                    + LocalTime.now(ZoneId.of("America/Sao_Paulo")).format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+                    + "\nTipo selecionado: " + this.tipoSelecionadoNome,
+                    FontFactory.getFont(FontFactory.COURIER_BOLDOBLIQUE, 8));
+
+            document.add(titulo);
+            document.add(subTitulo);
+
+            Table tabelaBensParaManutencao = new Table(6);
+
+            tabelaBensParaManutencao.setBorder(1);
+            tabelaBensParaManutencao.setBorderWidth(3);
+            tabelaBensParaManutencao.setWidth(100);
+            tabelaBensParaManutencao.setWidths(new float[]{25, 15, 15, 15, 15, 15});
+            tabelaBensParaManutencao.setPadding(2.1f);
+
+            Paragraph paragrafoNomeBem = new Paragraph(new Phrase(20, "Nome",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12f)));
+            paragrafoNomeBem.setAlignment(Element.ALIGN_CENTER);
+
+            Paragraph paragrafoTipoProduto = new Paragraph(new Phrase(20, "Tipo",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12f)));
+            paragrafoTipoProduto.setAlignment(Element.ALIGN_CENTER);
+
+            Paragraph paragrafoDataCompra = new Paragraph(new Phrase(20, "Data da compra",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12f)));
+            paragrafoDataCompra.setAlignment(Element.ALIGN_CENTER);
+
+            Paragraph paragrafoPreco = new Paragraph(new Phrase(20, "Preço da compra",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12f)));
+            paragrafoPreco.setAlignment(Element.ALIGN_CENTER);
+
+            Paragraph paragrafoResidual = new Paragraph(new Phrase(20, "Residual",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12f)));
+            paragrafoResidual.setAlignment(Element.ALIGN_CENTER);
+
+            Paragraph paragrafoVidaUtil = new Paragraph(new Phrase(20, "Vida Útil",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12f)));
+            paragrafoVidaUtil.setAlignment(Element.ALIGN_CENTER);
+
+            Cell celulaNome = new Cell(paragrafoNomeBem);
+            Cell celulaTipo = new Cell(paragrafoTipoProduto);
+            Cell celulaDataCompra = new Cell(paragrafoDataCompra);
+            Cell celulaPreco = new Cell(paragrafoPreco);
+            Cell celulaResidual = new Cell(paragrafoResidual);
+            Cell celulaVidaUtil = new Cell(paragrafoVidaUtil);
+
+            tabelaBensParaManutencao.addCell(celulaNome);
+            tabelaBensParaManutencao.addCell(celulaTipo);
+            tabelaBensParaManutencao.addCell(celulaDataCompra);
+            tabelaBensParaManutencao.addCell(celulaPreco);
+            tabelaBensParaManutencao.addCell(celulaResidual);
+            tabelaBensParaManutencao.addCell(celulaVidaUtil);
+
+            for (Bem bem : bensManutencaoFiltro) {
+
+                Paragraph paragrafoNomeBemValor = new Paragraph(new Phrase(20, bem.getNomeProduto(),
+                        FontFactory.getFont(FontFactory.HELVETICA, 12f)));
+                paragrafoNomeBemValor.setAlignment(Element.ALIGN_CENTER);
+
+                Paragraph paragrafoTipoProdutoValor = new Paragraph(new Phrase(20, bem.getTipoProduto().getTipo(),
+                        FontFactory.getFont(FontFactory.HELVETICA, 12f)));
+                paragrafoTipoProdutoValor.setAlignment(Element.ALIGN_CENTER);
+
+                Paragraph paragrafoDataCompraValor = new Paragraph(new Phrase(20, bem.getDataCompra().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        FontFactory.getFont(FontFactory.HELVETICA, 12f)));
+                paragrafoDataCompraValor.setAlignment(Element.ALIGN_CENTER);
+
+                Paragraph paragrafoPrecoValor = new Paragraph(new Phrase(20, format.format(bem.getPrecoCompra()),
+                        FontFactory.getFont(FontFactory.HELVETICA, 12f)));
+                paragrafoPrecoValor.setAlignment(Element.ALIGN_CENTER);
+
+                Paragraph paragrafoResidualValor = new Paragraph(new Phrase(20, format.format(bem.getValorResidual()),
+                        FontFactory.getFont(FontFactory.HELVETICA, 12f)));
+                paragrafoResidualValor.setAlignment(Element.ALIGN_CENTER);
+
+                Paragraph paragrafoVidaUtilValor = new Paragraph(new Phrase(20, String.valueOf(bem.getVidaUtil()),
+                        FontFactory.getFont(FontFactory.HELVETICA, 12f)));
+                paragrafoVidaUtilValor.setAlignment(Element.ALIGN_CENTER);
+
+                Cell celulaNomeValor = new Cell(paragrafoNomeBemValor);
+                Cell celulaTipoValor = new Cell(paragrafoTipoProdutoValor);
+                Cell celulaDataCompraValor = new Cell(paragrafoDataCompraValor);
+                Cell celulaPrecoValor = new Cell(paragrafoPrecoValor);
+                Cell celulaResidualValor = new Cell(paragrafoResidualValor);
+                Cell celulaVidaUtilValor = new Cell(paragrafoVidaUtilValor);
+
+                tabelaBensParaManutencao.addCell(celulaNomeValor);
+                tabelaBensParaManutencao.addCell(celulaTipoValor);
+                tabelaBensParaManutencao.addCell(celulaDataCompraValor);
+                tabelaBensParaManutencao.addCell(celulaPrecoValor);
+                tabelaBensParaManutencao.addCell(celulaResidualValor);
+                tabelaBensParaManutencao.addCell(celulaVidaUtilValor);
+
+            }
+
+            document.add(tabelaBensParaManutencao);
+
+            //Runtime.getRuntime().exec(new String[]{"/home/marcio/relatorioManutencao.pdf"});
+//            File myFile = new File("/relatorioManutencao.pdf");
+//            Desktop.getDesktop().open(myFile);
+            String os = System.getProperty("os.name").toLowerCase();
+            Runtime rt = Runtime.getRuntime();
+            try {
+                if (os.contains("win")) {
+                    // Windows
+                    rt.exec("rundll32 url.dll,FileProtocolHandler " + "relatorioManutencao.pdf");
+                } else if (os.contains("mac")) {
+                    // Mac
+                    rt.exec("open " + "/relatorioManutencao.pdf");
+                } else if (os.contains("nix") || os.contains("nux")) {
+                    // Linux/Unix
+                    // Tenta abrir no navegador padrão
+                    String[] browsers = {"xdg-open", "google-chrome", "firefox", "opera",
+                        "epiphany", "konqueror", "mozilla", "netscape"};
+
+                    String browser = null;
+                    for (String b : browsers) {
+                        if (Runtime.getRuntime().exec(new String[]{"which", b}).waitFor() == 0) {
+                            browser = b;
+                            break;
+                        }
+                    }
+                    if (browser == null) {
+                        throw new Exception("Nenhum navegador encontrado");
+                    } else {
+                        rt.exec(new String[]{browser, "relatorioManutencao.pdf"});
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Tratar o erro adequadamente
+            }
+            document.close();
+
+        } catch (DocumentException | IOException e) {
+            System.out.println(e);
+        }
 
     }
 
@@ -120,6 +332,30 @@ public class ManagerRelatorio implements Serializable {
 
     public void setTipos(List<TipoProduto> tipos) {
         this.tipos = tipos;
+    }
+
+    public ServiceManutencao getServiceManutencao() {
+        return serviceManutencao;
+    }
+
+    public void setServiceManutencao(ServiceManutencao serviceManutencao) {
+        this.serviceManutencao = serviceManutencao;
+    }
+
+    public TipoProduto getTipoSelecionado() {
+        return tipoSelecionado;
+    }
+
+    public void setTipoSelecionado(TipoProduto tipoSelecionado) {
+        this.tipoSelecionado = tipoSelecionado;
+    }
+
+    public String getTipoSelecionadoNome() {
+        return tipoSelecionadoNome;
+    }
+
+    public void setTipoSelecionadoNome(String tipoSelecionadoNome) {
+        this.tipoSelecionadoNome = tipoSelecionadoNome;
     }
 
 }
