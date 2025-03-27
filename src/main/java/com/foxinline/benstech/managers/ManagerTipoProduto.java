@@ -3,6 +3,7 @@ package com.foxinline.benstech.managers;
 import com.foxinline.benstech.models.TipoProduto;
 import com.foxinline.benstech.services.ServiceBem;
 import com.foxinline.benstech.services.ServiceTipoProduto;
+import com.foxinline.benstech.utilities.Mensagem;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.faces.application.FacesMessage;
@@ -56,6 +57,7 @@ public class ManagerTipoProduto implements Serializable {
 
     public void atualizarTipo() {
         serviceTipoProduto.atualizar(tipoSelecionado);
+        Mensagem.messagemInfo("Tipo atualizado!");
     }
 
     public List<TipoProduto> buscarTodosTipos() {

@@ -8,7 +8,7 @@
         <title>Bens Tech</title>
     </h:head>
     <h:body>
-        <h:form>
+        <h:form id="formGeral">
             <p:megaMenu orientation="horizontal" autoDisplay="false" style="margin-bottom: 18px">
                 <f:facet name="start">
                     <p:graphicImage value="assets/logoBranca.png" width="210" height="54"/>
@@ -45,9 +45,7 @@
                 </p:submenu>
 
             </p:megaMenu>
-            <!--        <div style="display: flex;align-items: center; justify-content: center ">
-                        <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="margin-left: 24px;" />
-                    </div>-->
+            
             <p:growl id="mess" showDetail="true"/>
 
             <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
@@ -64,7 +62,7 @@
                         </p:column>
                         <p:column headerText="Ações">
                             <p:commandButton icon="pi pi-pencil" actionListener="#{managerTipoProduto.setTipoSelecionado(tipoDt)}"
-                                             update="formEditarTipoProduto" onclick="PF('dlgEditarTipo').show()" process="@this" style="margin-right: 12px"/>
+                                             update="formEditarTipoProduto" onclick="PF('dlgEditarTipo').show()" style="margin-right: 12px"/>
 
                             <p:commandButton icon="pi pi-trash" actionListener="#{managerTipoProduto.inativarTipo(tipoDt)}" onclick="#{managerGrafico.init()}" 
                                              update="@form, tiposDataTable, graficoBensTipo, mess" process="@this"/>
@@ -74,9 +72,7 @@
                 <p:chart id="graficoBensTipo" style="width: 360px; height: 360px;  margin-left: 51px;" value="#{managerGrafico.pieModel}"/>
             </div>
 
-            <!--        <div style="width: 360px; height: 360px; margin-top: 39px; margin-left: 51px;">
-                        <p:chart id="graficoPizza" value="#{managerGrafico.pieModel}"/>
-                    </div>-->
+            
         </h:form>
 
         <p:dialog header="Adicionar Tipo" widgetVar="dlgAdicionarTipo" minHeight="40" width="350" showEffect="fade" hideEffect="fade" modal="true" focus="btnYes2" closeOnEscape="true" closable="false">
@@ -99,7 +95,7 @@
                 <p:defaultCommand target="botaoSalvarTipo"/>
 
                 <p:commandButton id="botaoSalvarTipo" value="Salvar" actionListener="#{managerTipoProduto.salvarTipo()}" 
-                                 update="formTipoProduto, tiposDataTable, graficoBensTipo" style="float: right" onclick="#{managerGrafico.init()}">
+                                 update="formTipoProduto, formGeral, tiposDataTable, graficoBensTipo" style="float: right" onclick="#{managerGrafico.init()}">
                 </p:commandButton>
 
             </h:form>
@@ -126,7 +122,7 @@
                 <p:defaultCommand target="botaoEditarTipo"/>
 
                 <p:commandButton id="botaoEditarTipo" value="Atualizar" actionListener="#{managerTipoProduto.atualizarTipo()}" 
-                                 update="formEditarTipoProduto, tiposDataTable, graficoBensTipo" style="float: right" onclick="#{managerGrafico.init()}">
+                                 update="formEditarTipoProduto, formGeral, tiposDataTable, graficoBensTipo, mess" style="float: right" onclick="#{managerGrafico.init()}" >
                 </p:commandButton>
 
             </h:form>
