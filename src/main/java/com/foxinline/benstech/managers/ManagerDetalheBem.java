@@ -91,7 +91,6 @@ public class ManagerDetalheBem implements Serializable {
         int mesesBem = 0;
         mesesBem += (LocalDate.now().getYear() - bemSelecionado.getDataCompra().getYear()) * 12;
         mesesBem += (LocalDate.now().getMonthValue() - bemSelecionado.getDataCompra().getMonthValue());
-        System.out.println(mesesBem);
         if (manutencoes.isEmpty() && mesesBem >= 12) {
             return "Sim";
         }
@@ -99,7 +98,6 @@ public class ManagerDetalheBem implements Serializable {
             int meses = 0;
             meses += (LocalDate.now().getYear() - m.getDataManutencao().getYear()) * 12;
             meses += (LocalDate.now().getMonthValue() - m.getDataManutencao().getMonthValue());
-            System.out.println(meses);
             if (meses <= 12) {
                 return "Não";
             } else {

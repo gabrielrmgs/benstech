@@ -16,10 +16,10 @@
             <p:submenu label="Inventário" icon="pi pi-fw pi-list" style="margin-top: 9px">
                 <p:column>
                     <p:submenu label="Bem">
-                        <p:menuitem value="Cadastrar" url="index.xhtml"/>
+                        <p:menuitem value="Cadastrar Bens" url="index.xhtml"/>
                     </p:submenu>
                     <p:submenu label="Tipo produto">
-                        <p:menuitem value="Cadastrar" url="tipoProduto.xhtml"/>
+                        <p:menuitem value="Cadastrar Tipos" url="tipoProduto.xhtml"/>
                     </p:submenu>
                 </p:column>
             </p:submenu>
@@ -28,8 +28,7 @@
 
                 <p:column>
                     <p:submenu label="Relatórios">
-                        <p:menuitem value="Relatório de Manutenção" url="relatorioManutencao.xhtml"/>
-                        <p:menuitem value="Relatório Valor X Depreciação" url="relatorioValorDepreciacao.xhtml"/>
+                        <p:menuitem value="Relatório de Inventário" url="relatorioManutencao.xhtml"/>
                     </p:submenu>
                 </p:column>
 
@@ -37,14 +36,10 @@
             <p:submenu label="Configurações" icon="pi pi-fw pi-cog">
 
                 <p:column>
-                    <p:submenu label="User 1">
-                        <p:menuitem value="User 1.1"/>
-                        <p:menuitem value="User 1.2"/>
+                    <p:submenu label="Configurações">
+                        <p:menuitem value="Admin"/>
                     </p:submenu>
-                    <p:submenu label="User 2">
-                        <p:menuitem value="User 2.1"/>
-                        <p:menuitem value="User 2.2"/>
-                    </p:submenu>
+                   
                 </p:column>
 
             </p:submenu>
@@ -56,14 +51,23 @@
             <h:form id="form">
 
                 <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px"> 
-                    <p:card style="width: 990px;" title="Relatório de bens para manutenção preventiva" >
+                    <p:card style="width: 990px;" title="Relatório de Inventário" >
 
-                        <p:selectOneMenu id="option" value="#{managerRelatorio.idTipoSelecionado}" >
-                            <f:selectItem itemLabel="Selecione um tipo" itemValue="" noSelectionOption="true" />
-                            <f:selectItems value="#{managerRelatorio.tipos}" var="tipo" itemLabel="#{tipo.tipo}" itemValue="#{tipo.id}"/>
-                        </p:selectOneMenu>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 54px">
+                            <p:selectOneMenu id="option" value="#{managerRelatorio.idTipoSelecionado}" >
+                                <f:selectItem itemLabel="Selecione um tipo" itemValue="" noSelectionOption="true" />
+                                <f:selectItems value="#{managerRelatorio.tipos}" var="tipo" itemLabel="#{tipo.tipo}" itemValue="#{tipo.id}"/>
+                            </p:selectOneMenu>
+                            <div style="display: flex; justify-content: center; align-items: center">
+                                <p:outputLabel for="manutencaoSwitch" value="Bens para manutenção:"/>
+                                <p:toggleSwitch id="manutencaoSwitch" value="#{managerRelatorio.manutencaoSwitch}" onIcon="pi pi-check" offIcon="pi pi-times" />
+                            </div>
+                            <p:commandButton actionListener="#{managerRelatorio.filtrarPorTipo()}" value="Filtrar" update="@form, manutencaoDataTable"/>
 
-                        <p:commandButton actionListener="#{managerRelatorio.filtrarPorTipo()}" value="Filtrar" style="margin-left: 12px" update="@form, manutencaoDataTable"/>
+                        </div>
+
+
+
 
                         <p:dataTable id="manutencaoDataTable" var="manutencaoDt" value="#{managerRelatorio.bensManutencaoFiltro}"  >
                             <p:column headerText="Nome do produto">

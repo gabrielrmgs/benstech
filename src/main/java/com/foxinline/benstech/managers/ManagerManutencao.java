@@ -38,7 +38,7 @@ public class ManagerManutencao implements Serializable {
         this.serviceManutencao.salvar(this.manutencao);
         this.manutencao = new Manutencao();
         this.manutencoesDoBem = this.serviceManutencao.buscarManutencaoBemId(this.bemSelecionado.getId());
-        Mensagem.messagemInfoRedirect("Cadastrado", "detalheBem.xhtml");
+        Mensagem.messagemInfoRedirect("Manutenção cadastrada!", "detalheBem.xhtml");
 
     }
 
@@ -46,7 +46,7 @@ public class ManagerManutencao implements Serializable {
         manutencao.setAtivo(false);
         serviceManutencao.atualizar(manutencao);
         this.manutencoesDoBem = this.serviceManutencao.buscarManutencaoBemId(this.bemSelecionado.getId());
-        Mensagem.messagemInfoRedirect("Cadastrado", "detalheBem.xhtml");
+        Mensagem.messagemInfoRedirect("Manutenção excluída!", "detalheBem.xhtml");
 
     }
 

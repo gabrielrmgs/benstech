@@ -8,104 +8,110 @@
         <title>Bens Tech</title>
     </h:head>
     <h:body>
-
-        <p:megaMenu orientation="horizontal" autoDisplay="false" style="margin-bottom: 18px">
-            <f:facet name="start">
-                <p:graphicImage value="assets/logoBranca.png" width="210" height="54"/>
-            </f:facet>
-            <p:submenu label="Inventário" icon="pi pi-fw pi-list" style="margin-top: 9px">
-                <p:column>
-                    <p:submenu label="Bem">
-                        <p:menuitem value="Cadastrar" url="#"/>
-                    </p:submenu>
-                    <p:submenu label="Tipo produto">
-                        <p:menuitem value="Cadastrar" url="tipoProduto.xhtml"/>
-                    </p:submenu>
-                </p:column>
-            </p:submenu>
-
-            <p:submenu label="Relatórios" icon="pi pi-fw pi-chart-line">
-
-                <p:column>
-                    <p:submenu label="Relatórios">
-                        <p:menuitem value="Relatório de Manutenção" url="relatorioManutencao.xhtml"/>
-                        <p:menuitem value="Relatório Valor x Depreciação" url="relatorioValorDepreciacao.xhtml"/>
-                    </p:submenu>
-                </p:column>
-
-            </p:submenu>
-            <p:submenu label="Configurações" icon="pi pi-fw pi-cog">
-
-                <p:column>
-                    <p:submenu label="User 1">
-                        <p:menuitem value="User 1.1"/>
-                        <p:menuitem value="User 1.2"/>
-                    </p:submenu>
-                    <p:submenu label="User 2">
-                        <p:menuitem value="User 2.1"/>
-                        <p:menuitem value="User 2.2"/>
-                    </p:submenu>
-                </p:column>
-
-            </p:submenu>
-
-        </p:megaMenu>
-
-
-        <div style="display: flex;align-items: center; justify-content: center ">
-            <p:commandButton value="Novo ativo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarBem').show()"/>
-            <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="margin-left: 24px; display: none" />
-        </div>
-
-
-        <div style="display: flex; align-items: center; justify-content: center; margin-top: 18px">
-            <p:card style="width: 1410px; " title="Bens cadastrados">
-                <p:dataTable id="bensDataTable" var="bemDt" value="#{managerBem.bens}" paginator="true" rows="9" paginatorPosition="bottom">
-
-                    <p:column headerText="Nome do produto">
-                        <h:outputText value="#{bemDt.nomeProduto}" />
+        <h:form id="formGeral">
+            <p:growl id="messages"/>
+            <p:megaMenu orientation="horizontal" autoDisplay="false" style="margin-bottom: 18px">
+                <f:facet name="start">
+                    <p:graphicImage value="assets/logoBranca.png" width="210" height="54"/>
+                </f:facet>
+                <p:submenu label="Inventário" icon="pi pi-fw pi-list" style="margin-top: 9px">
+                    <p:column>
+                        <p:submenu label="Bem">
+                            <p:menuitem value="Cadastrar Bens" url="#"/>
+                        </p:submenu>
+                        <p:submenu label="Tipo produto">
+                            <p:menuitem value="Cadastrar Tipos" url="tipoProduto.xhtml"/>
+                        </p:submenu>
                     </p:column>
-                    <p:column headerText="Tipo">
-                        <h:outputText value="#{bemDt.tipoProduto}" />
-                    </p:column>
-                    <p:column headerText="Data da compra">
-                        <h:outputText value="#{bemDt.dataFormatada}" />
-                    </p:column>
-                    <p:column headerText="Preço da compra">
-                        <h:outputText value="#{formatador.formatadorMoeda.format(bemDt.precoCompra)}" />
+                </p:submenu>
+
+                <p:submenu label="Relatórios" icon="pi pi-fw pi-chart-line">
+
+                    <p:column>
+                        <p:submenu label="Relatórios">
+                            <p:menuitem value="Relatório de Inventário" url="relatorioManutencao.xhtml"/>
+                        </p:submenu>
                     </p:column>
 
-                    <p:column headerText="Vida Útil">
-                        <h:outputText value="#{bemDt.vidaUtil}" />
+                </p:submenu>
+                <p:submenu label="Configurações" icon="pi pi-fw pi-cog">
+
+                    <p:column>
+                        <p:submenu label="Configurações">
+                            <p:menuitem value="Admin"/>
+                        </p:submenu>
+                        
                     </p:column>
 
-                    <p:column headerText="Ações">
-                        <p:commandButton icon="pi pi-search" style="margin-right: 9px"
-                                         actionListener="#{managerManutencao.setBemSelecionado(bemDt)}" action="#{managerDetalheBem.encaminharDetalhes(bemDt)}"
-                                         process="@this"/>
+                </p:submenu>
 
-                        <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerBem.setBemSelecionado(bemDt)}"
-                                         update="formEditarBem" onclick="PF('dlgEditarBem').show()" process="@this"/>
+            </p:megaMenu>
 
-                        <p:commandButton icon="pi pi-trash" actionListener="#{managerBem.inativarBem(bemDt)}" 
-                                         onclick="#{managerGrafico.init()}" update="bensDataTable" process="@this"/>
-                    </p:column>
-                </p:dataTable>
-            </p:card>
-        </div>
 
-      
+            <div style="display: flex;align-items: center; justify-content: center ">
+                <p:commandButton value="Novo ativo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarBem').show()"/>
+                <p:commandButton value="Novo Tipo" type="button" icon="pi pi-plus" iconPos="rigth" onclick="PF('dlgAdicionarTipo').show()" style="margin-left: 24px; display: none" />
+            </div>
 
-        <p:dialog header="Adicionar bem" widgetVar="dlgAdicionarBem" minHeight="40" width="350" showEffect="fade" focus="btnYes" closeOnEscape="true">
+
+            <div style="display: flex; align-items: center; justify-content: center; margin-top: 18px">
+                <p:card style="width: 1410px; " title="Bens cadastrados">
+                    <p:dataTable id="bensDataTable" var="bemDt" value="#{managerBem.bens}" paginator="true" rows="9" paginatorPosition="bottom">
+
+                        <p:column headerText="Nome do produto">
+                            <h:outputText value="#{bemDt.nomeProduto}" />
+                        </p:column>
+                        <p:column headerText="Tipo">
+                            <h:outputText value="#{bemDt.tipoProduto}" />
+                        </p:column>
+                        <p:column headerText="Data da compra">
+                            <h:outputText value="#{bemDt.dataFormatada}" />
+                        </p:column>
+                        <p:column headerText="Preço da compra">
+                            <h:outputText value="#{formatador.formatadorMoeda.format(bemDt.precoCompra)}" />
+                        </p:column>
+
+                        <p:column headerText="Vida Útil">
+                            <h:outputText value="#{bemDt.vidaUtil}" />
+                        </p:column>
+
+                        <p:column headerText="Ações">
+                            <p:commandButton icon="pi pi-search" style="margin-right: 9px"
+                                             actionListener="#{managerManutencao.setBemSelecionado(bemDt)}" action="#{managerDetalheBem.encaminharDetalhes(bemDt)}"
+                                             process="@this"/>
+
+                            <p:commandButton style="margin-right: 9px" icon="pi pi-pencil" actionListener="#{managerBem.setBemSelecionado(bemDt)}"
+                                             update="formEditarBem" onclick="PF('dlgEditarBem').show()" process="@this"/>
+
+                            <p:commandButton icon="pi pi-trash" actionListener="#{managerBem.inativarBem(bemDt)}" 
+                                             onclick="#{managerGrafico.init()}" update="bensDataTable, valorTotal, graficoBensTipo, formGeral, messages" process="@this">
+                                <p:confirm header="Confirmação" message="Você deseja realmente excluir este bem?" icon="pi pi-exclamation-triangle"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:card>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: center; height: 360px">
+                <p:chart id="graficoBensTipo" value="#{managerGrafico.donutModel}"/>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+            </p:confirmDialog>
+        </h:form>
+
+        <p:dialog header="Adicionar bem" widgetVar="dlgAdicionarBem" minHeight="40" width="350" showEffect="fade" hideEffect="fade" modal="true" focus="btnYes" closeOnEscape="true">
             <h:form id="formAdicionarBem" >
 
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
 
                     <p:outputLabel value="Nome do bem"/>
-                    <p:inputText value="#{managerBem.bem.nomeProduto}"/>
+                    <p:inputText required="true" requiredMessage="Nome precisa estar preenchido" value="#{managerBem.bem.nomeProduto}"/>
 
                     <p:outputLabel for="@next" value="Tipo do bem"/>
-                    <p:selectOneMenu id="option" value="#{managerBem.idTipoSelecionado}">
+                    <p:selectOneMenu id="option" required="true" requiredMessage="O tipo precisa ser preenchido" value="#{managerBem.idTipoSelecionado}">
                         <f:selectItem itemLabel="Selecione um tipo" itemValue="" noSelectionOption="true" />
                         <f:selectItems value="#{managerTipoProduto.tipos}" var="tipo" itemLabel="#{tipo.tipo}" itemValue="#{tipo.id}"/>
                     </p:selectOneMenu>
@@ -115,7 +121,7 @@
                                    decimalSeparator="," thousandSeparator="."/>
 
                     <p:outputLabel for="basic" value="Data de compra" />
-                    <p:datePicker id="basic" value="#{managerBem.bem.dataCompra}" pattern="dd/MM/yyyy"/>
+                    <p:datePicker required="true" requiredMessage="Data precisa ser preenchida" id="basic" value="#{managerBem.bem.dataCompra}" pattern="dd/MM/yyyy"/>
 
                     <p:outputLabel value="Vida útil estimada"/>
                     <p:inputNumber value="#{managerBem.bem.vidaUtil}"/>
@@ -136,7 +142,7 @@
                 <p:defaultCommand target="botaoSalvarBem"/>
 
                 <p:commandButton id="botaoSalvarBem" value="Salvar" actionListener="#{managerBem.salvarBem()}"
-                                 update="@form, bensDataTable, graficoPizza" style="float: right"
+                                 update="@form, formGeral, bensDataTable, graficoPizza, messages" style="float: right"
                                  onclick="#{managerGrafico.init()}">
                 </p:commandButton>
 
@@ -147,7 +153,7 @@
 
 
 
-        <p:dialog header="Editar bem" widgetVar="dlgEditarBem" minHeight="40" width="350" showEffect="fade" focus="btnYes" closeOnEscape="true">
+        <p:dialog header="Editar bem" widgetVar="dlgEditarBem" minHeight="40" width="350" showEffect="fade" hideEffect="fade" modal="true" focus="btnYes" closeOnEscape="true">
             <h:form id="formEditarBem" >
 
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px">
@@ -186,8 +192,8 @@
 
                 <p:defaultCommand target="botaoEditarBem"/>
 
-                <p:commandButton id="botaoEditarBem" value="Salvar" actionListener="#{managerBem.atualizarBem()}"
-                                 update="@form, bensDataTable, graficoPizza" style="float: right"
+                <p:commandButton id="botaoEditarBem" value="Editar" actionListener="#{managerBem.atualizarBem()}"
+                                 update="@form, bensDataTable, graficoPizza, formGeral, messages" style="float: right"
                                  onclick="#{managerGrafico.init()}">
                 </p:commandButton>
 
@@ -198,29 +204,29 @@
     </h:body>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script>
-                function chartExtender() {
-                    var options = {
-                        plugins: [ChartDataLabels],
-                        options: {
-                            plugins: {
-                                // Change options for ALL labels of THIS CHART
-                                datalabels: {
-                                    color: 'HotPink'
-                                }
-                            }
-                        },
-                        data: {
-                            datasets: [{
-                                    // Change options only for labels of THIS DATASET
-                                    datalabels: {
-                                        color: 'Indigo'
-                                    }
-                                }]
-                        }
-                    };
+                                                 function chartExtender() {
+                                                     var options = {
+                                                         plugins: [ChartDataLabels],
+                                                         options: {
+                                                             plugins: {
+                                                                 // Change options for ALL labels of THIS CHART
+                                                                 datalabels: {
+                                                                     color: 'HotPink'
+                                                                 }
+                                                             }
+                                                         },
+                                                         data: {
+                                                             datasets: [{
+                                                                     // Change options only for labels of THIS DATASET
+                                                                     datalabels: {
+                                                                         color: 'Indigo'
+                                                                     }
+                                                                 }]
+                                                         }
+                                                     };
 
-                    //merge all options into the main chart options
-                    $.extend(true, this.cfg.config, options);
-                }
+                                                     //merge all options into the main chart options
+                                                     $.extend(true, this.cfg.config, options);
+                                                 }
     </script>
 </html>

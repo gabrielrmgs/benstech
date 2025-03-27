@@ -1,9 +1,12 @@
 package com.foxinline.benstech.managers;
 
 import com.foxinline.benstech.models.TipoProduto;
+import com.foxinline.benstech.services.ServiceBem;
 import com.foxinline.benstech.services.ServiceTipoProduto;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -16,6 +19,9 @@ public class ManagerTipoProduto implements Serializable {
 
     @EJB
     private ServiceTipoProduto serviceTipoProduto;
+
+    @EJB
+    private ServiceBem serviceBem;
 
     private TipoProduto tipoProduto;
     private List<TipoProduto> tipos;
@@ -37,6 +43,12 @@ public class ManagerTipoProduto implements Serializable {
     }
 
     public void inativarTipo(TipoProduto tipo) {
+
+        if (!serviceBem.findBemsTipoProduto(tipo).isEmpty()) {
+            FacesContext.getCurrentInstance().
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Operação inválida!", "O tipo " + tipo.getTipo() + " contém bens cadastrados!"));
+            return;
+        }
         tipo.setAtivo(false);
         serviceTipoProduto.atualizar(tipo);
         this.tipos = serviceTipoProduto.findAll();

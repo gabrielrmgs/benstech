@@ -4,12 +4,14 @@ import com.foxinline.benstech.models.Bem;
 import com.foxinline.benstech.models.TipoProduto;
 import com.foxinline.benstech.services.ServiceBem;
 import com.foxinline.benstech.services.ServiceTipoProduto;
-import com.foxinline.benstech.utilities.Formatador;
+import com.foxinline.benstech.utilities.Mensagem;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,7 @@ public class ManagerBem implements Serializable {
         this.bens = serviceBem.findAll();
         this.tipoSelecionado = new TipoProduto();
         this.bemSelecionado = new Bem();
+        this.bem.setDataCompra(LocalDate.now());
 
     }
 
@@ -46,12 +49,15 @@ public class ManagerBem implements Serializable {
         this.bens = serviceBem.findAll();
         this.bem = new Bem();
         this.tipoSelecionado = new TipoProduto();
+        Mensagem.messagemInfo("Ativo cadastrado com sucesso!");
     }
 
     public void atualizarBem() {
         this.tipoSelecionado = serviceTipoProduto.findById(Long.valueOf(idTipoSelecionado));
         this.bemSelecionado.setTipoProduto(tipoSelecionado);
         serviceBem.atualizar(this.bemSelecionado);
+        Mensagem.messagemInfo("Ativo editado com sucesso!");
+
     }
 
     public void buscarTodosBens() {
@@ -62,6 +68,7 @@ public class ManagerBem implements Serializable {
         bem.setAtivo(false);
         serviceBem.atualizar(bem);
         this.bens = serviceBem.findAll();
+        Mensagem.messagemInfo("Ativo excluído com sucesso!");
 
     }
 
@@ -114,7 +121,5 @@ public class ManagerBem implements Serializable {
         this.idTipoSelecionado = String.valueOf(bemSelecionado.getTipoProduto().getId());
         this.bemSelecionado = bemSelecionado;
     }
-
-    
 
 }

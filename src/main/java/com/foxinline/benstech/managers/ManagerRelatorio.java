@@ -10,6 +10,7 @@ import com.foxinline.benstech.models.TipoProduto;
 import com.foxinline.benstech.services.ServiceBem;
 import com.foxinline.benstech.services.ServiceManutencao;
 import com.foxinline.benstech.services.ServiceTipoProduto;
+import com.foxinline.benstech.utilities.Formatador;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -29,14 +30,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  *
@@ -57,6 +56,11 @@ public class ManagerRelatorio implements Serializable {
     private List<Bem> bensManutencao;
     private List<Bem> bensManutencaoFiltro;
     private List<TipoProduto> tipos;
+    private List<Bem> invatario;
+    private boolean manutencaoSwitch;
+    private List<Bem> bensTotal;
+
+    private Formatador formatador;
 
     private String idTipoSelecionado;
     private TipoProduto tipoSelecionado;
@@ -66,40 +70,61 @@ public class ManagerRelatorio implements Serializable {
     public void init() {
         this.bensManutencao = new ArrayList<>();
         this.bensManutencaoFiltro = new ArrayList<>();
+        this.invatario = new ArrayList<>();
+        this.formatador = new Formatador();
 
         this.tipos = new ArrayList<>();
+        this.bensTotal = new ArrayList<>();
         tipos = serviceTipoProduto.findAll();
-        List<Bem> bensTotal = serviceBem.findAll();
-        for (Bem bem : bensTotal) {
-            if (manutencaoPreventiva(bem)) {
-                bensManutencao.add(bem);
-            }
-        }
-        bensManutencaoFiltro.addAll(bensManutencao);
+        this.bensTotal = serviceBem.findAll();
+        bensManutencaoFiltro.addAll(bensTotal);
         filtrarPorTipo();
     }
 
     public void filtrarPorTipo() {
 
-        if (idTipoSelecionado == "" || idTipoSelecionado == null) {
-            bensManutencaoFiltro.clear();
-            bensManutencaoFiltro.addAll(bensManutencao);
+        bensManutencaoFiltro.clear();
+        if ((idTipoSelecionado == "" || idTipoSelecionado == null) && manutencaoSwitch == false) {
+            bensManutencaoFiltro.addAll(bensTotal);
             tipoSelecionadoNome = "Todos";
+            System.out.println("caso tipo false botao false");
+
             return;
         }
 
-        bensManutencaoFiltro.clear();
+        if (manutencaoSwitch == false) {
+            tipoSelecionado = serviceTipoProduto.findById(Long.valueOf(idTipoSelecionado));
+            tipoSelecionadoNome = tipoSelecionado.getTipo();
+            for (Bem bem : bensTotal) {
+                if (bem.getTipoProduto().equals(tipoSelecionado)) {
+                    bensManutencaoFiltro.add(bem);
+                }
+            }
+            System.out.println("caso tipo selecionado botao false");
+            System.out.println(bensManutencaoFiltro);
+            return;
+        }
 
+        if ((idTipoSelecionado == "" || idTipoSelecionado == null) && manutencaoSwitch == true) {
+            System.out.println("caso tipo false botao true");
+
+            for (Bem bem : bensTotal) {
+                if (manutencaoPreventiva(bem)) {
+                    bensManutencaoFiltro.add(bem);
+                }
+            }
+            return;
+        }
+
+        System.out.println("caso tipo true botao true");
         tipoSelecionado = serviceTipoProduto.findById(Long.valueOf(idTipoSelecionado));
         tipoSelecionadoNome = tipoSelecionado.getTipo();
-//        System.out.println(bensManutencao);
-//        System.out.println(tipoSelecionado);
-        for (Bem bem : bensManutencao) {
-            if (bem.getTipoProduto().equals(tipoSelecionado)) {
+
+        for (Bem bem : bensTotal) {
+            if (manutencaoPreventiva(bem) && bem.getTipoProduto().equals(tipoSelecionado)) {
                 bensManutencaoFiltro.add(bem);
             }
         }
-        //System.out.println(bensManutencaoFiltro);
     }
 
     public boolean manutencaoPreventiva(Bem bemSelecionado) {
@@ -110,7 +135,6 @@ public class ManagerRelatorio implements Serializable {
         int mesesBem = 0;
         mesesBem += (LocalDate.now().getYear() - bemSelecionado.getDataCompra().getYear()) * 12;
         mesesBem += (LocalDate.now().getMonthValue() - bemSelecionado.getDataCompra().getMonthValue());
-
         if (manutencoes.isEmpty() && mesesBem >= 12) {
             return true;
         }
@@ -118,17 +142,19 @@ public class ManagerRelatorio implements Serializable {
             int meses = 0;
             meses += (LocalDate.now().getYear() - m.getDataManutencao().getYear()) * 12;
             meses += (LocalDate.now().getMonthValue() - m.getDataManutencao().getMonthValue());
+            System.out.println(meses);
             if (meses <= 12) {
                 return false;
+            } else {
+                return true;
             }
         }
-        return true;
+        return false;
 
     }
 
     public void gerarPDFManutencao() throws FileNotFoundException, DocumentException, IOException {
-        Locale local = new Locale("pt", "br");
-        NumberFormat format = NumberFormat.getCurrencyInstance(local);
+
         Document document = new Document(PageSize.A4);
         document.setMargins(40f, 40f, 55f, 40f);
 
@@ -143,8 +169,14 @@ public class ManagerRelatorio implements Serializable {
             logo.setAbsolutePosition(20, 771);
             document.add(logo);
 
-            Paragraph titulo = new Paragraph("Relatório para manutenção de ativos", FontFactory.getFont(FontFactory.COURIER_BOLD, 15));
+            Paragraph titulo;
+            if (manutencaoSwitch) {
+                titulo = new Paragraph("Relatório de manutenção", FontFactory.getFont(FontFactory.COURIER_BOLD, 15));
+            } else {
+                titulo = new Paragraph("Relatório de Inventário", FontFactory.getFont(FontFactory.COURIER_BOLD, 15));
+            }
             titulo.setAlignment(Element.ALIGN_CENTER);
+
             Paragraph subTitulo = new Paragraph("Relatório emitido dia " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " às "
                     + LocalTime.now(ZoneId.of("America/Sao_Paulo")).format(DateTimeFormatter.ofPattern("HH:mm:ss"))
                     + "\nTipo selecionado: " + this.tipoSelecionadoNome,
@@ -213,11 +245,11 @@ public class ManagerRelatorio implements Serializable {
                         FontFactory.getFont(FontFactory.HELVETICA, 12f)));
                 paragrafoDataCompraValor.setAlignment(Element.ALIGN_CENTER);
 
-                Paragraph paragrafoPrecoValor = new Paragraph(new Phrase(20, format.format(bem.getPrecoCompra()),
+                Paragraph paragrafoPrecoValor = new Paragraph(new Phrase(20, formatador.getFormatadorMoeda().format(bem.getPrecoCompra()),
                         FontFactory.getFont(FontFactory.HELVETICA, 12f)));
                 paragrafoPrecoValor.setAlignment(Element.ALIGN_CENTER);
 
-                Paragraph paragrafoResidualValor = new Paragraph(new Phrase(20, format.format(bem.getValorResidual()),
+                Paragraph paragrafoResidualValor = new Paragraph(new Phrase(20, formatador.getFormatadorMoeda().format(bem.getValorResidual()),
                         FontFactory.getFont(FontFactory.HELVETICA, 12f)));
                 paragrafoResidualValor.setAlignment(Element.ALIGN_CENTER);
 
@@ -243,9 +275,6 @@ public class ManagerRelatorio implements Serializable {
 
             document.add(tabelaBensParaManutencao);
 
-            //Runtime.getRuntime().exec(new String[]{"/home/marcio/relatorioManutencao.pdf"});
-//            File myFile = new File("/relatorioManutencao.pdf");
-//            Desktop.getDesktop().open(myFile);
             String os = System.getProperty("os.name").toLowerCase();
             Runtime rt = Runtime.getRuntime();
             try {
@@ -356,6 +385,30 @@ public class ManagerRelatorio implements Serializable {
 
     public void setTipoSelecionadoNome(String tipoSelecionadoNome) {
         this.tipoSelecionadoNome = tipoSelecionadoNome;
+    }
+
+    public List<Bem> getInvatario() {
+        return invatario;
+    }
+
+    public void setInvatario(List<Bem> invatario) {
+        this.invatario = invatario;
+    }
+
+    public boolean isManutencaoSwitch() {
+        return manutencaoSwitch;
+    }
+
+    public void setManutencaoSwitch(boolean manutencaoSwitch) {
+        this.manutencaoSwitch = manutencaoSwitch;
+    }
+
+    public Formatador getFormatador() {
+        return formatador;
+    }
+
+    public void setFormatador(Formatador formatador) {
+        this.formatador = formatador;
     }
 
 }
